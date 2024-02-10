@@ -58,7 +58,7 @@ const Diarias = () => {
   };
 
   const handleNumeroDiariasChange = (e) => {
-    const newNumeroDiarias = parseFloat(e.target.value) || 0;
+    const newNumeroDiarias = parseFloat(e.target.value);
     setNumeroDiarias(newNumeroDiarias);
 
     const totalDiarias = calcularDiaria();
@@ -150,7 +150,7 @@ const Diarias = () => {
         <p>Tipo de Viagem: {tipoViagem === '1' ? 'Intermunicipal' : 'Interestadual'}</p>
         <p>Grupo de Municípios: {grupoViagem}</p>
         <p>Município Selecionado: {/* Adicione aqui o código para obter o município selecionado */}</p>
-        <p>Número de Diárias: {numeroDiarias}</p>
+        <p>Número de Diárias: {numeroDiarias || ''}</p>
         
       </div>
     </div>
