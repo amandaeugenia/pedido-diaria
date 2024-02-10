@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
@@ -6,7 +6,7 @@ const Diarias = () => {
   const [tipoCargo, setTipoCargo] = useState('1');
   const [tipoViagem, setTipoViagem] = useState('1');
   const [grupoViagem, setGrupoViagem] = useState();
-  const [numeroDiarias, setNumeroDiarias] = useState(1);
+  const [numeroDiarias, setNumeroDiarias] = useState();
   const [municipios, setMunicipios] = useState([]);
   const [totalDiarias, setTotalDiarias] = useState(0);
 
@@ -29,8 +29,13 @@ const Diarias = () => {
       }
     }
 
-    return valorDiaria * numeroDiarias;
+    return parseFloat(numeroDiarias) ? valorDiaria * parseFloat(numeroDiarias) : 0;
   };
+
+  useEffect(() => {
+    const totalDiarias = calcularDiaria();
+    setTotalDiarias(totalDiarias);
+  }, [tipoCargo, tipoViagem, grupoViagem, numeroDiarias]);
 
   const handleGrupoChange = (e) => {
     setGrupoViagem(e.target.value);
@@ -53,7 +58,7 @@ const Diarias = () => {
   };
 
   const handleNumeroDiariasChange = (e) => {
-    const newNumeroDiarias = parseInt(e.target.value, 10);
+    const newNumeroDiarias = parseFloat(e.target.value) || 0;
     setNumeroDiarias(newNumeroDiarias);
 
     const totalDiarias = calcularDiaria();
@@ -129,7 +134,7 @@ const Diarias = () => {
       />
 
       <br />
-      <p>Total de Diárias: R${totalDiarias.toFixed(2)}</p>
+      <p>Total: R${totalDiarias.toFixed(2)}</p>
 
       {/* Botão para calcular diárias e gerar PDF */}
       <button onClick={handleCalcularDiaria}>

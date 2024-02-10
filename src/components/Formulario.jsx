@@ -99,6 +99,27 @@ export const Formulario = () => {
                       <p className='error'>{errors.setor?.message}</p>
                     </div>
                   </div>
+                  <div>
+                    <label htmlFor="">Motivação:</label>
+                    <div>
+                      <input type="text" name="motivacao" id="motivacao:" {...register("motivacao:", {required: 'Campo inválido'})}/>
+                      <p className='error'>{errors.motivacao?.message}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="">Período:</label>
+                    <div>
+                      <input type="text" name="periodo" id="periodo" {...register("periodo", {required: 'Campo inválido'})}/>
+                      <p className='error'>{errors.periodo?.message}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="">Observação:</label>
+                    <div>
+                      <input type="text" name="observacao" id="observacao" {...register("observacao", {required: 'Campo inválido'})}/>
+                      <p className='error'>{errors.observacao?.message}</p>
+                    </div>
+                  </div>
               </div>
           <Diarias />
           
