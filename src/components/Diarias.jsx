@@ -83,76 +83,70 @@ const Diarias = () => {
   return (
     <div>
       <label htmlFor="tipoCargo">Tipo de Cargo:</label>
-      <select id="tipoCargo" onChange={(e) => setTipoCargo(e.target.value)}>
-        <option value="1">Servidor</option>
-        <option value="2">Diretor</option>
-      </select>
+      <div>
+        <select id="tipoCargo" onChange={(e) => setTipoCargo(e.target.value)}>
+          <option value="1">Servidor</option>
+          <option value="2">Diretor</option>
+        </select>
+      </div>
 
-      <br />
+    
 
       <label htmlFor="tipoViagem">Tipo de Viagem:</label>
-      <select id="tipoViagem" onChange={(e) => setTipoViagem(e.target.value)}>
-        <option value="1">Intermunicipal</option>
-        <option value="2">Interestadual</option>
-      </select>
+      <div>
+        <select id="tipoViagem" onChange={(e) => setTipoViagem(e.target.value)}>
+          <option value="1">Intermunicipal</option>
+          <option value="2">Interestadual</option>
+        </select>
+      </div>
 
-      <br />
+   
 
       <label htmlFor="grupoViagem">Grupo de Municípios:</label>
-      <select id="grupoViagem" onChange={handleGrupoChange}>
-      <option value="" disabled selected hidden>Selecione uma opção</option>
-        <option value="A">A</option>
-        <option value="B">B</option>
-        <option value="C">C</option>
-      </select>
+      <div>
+        <select id="grupoViagem" onChange={handleGrupoChange}>
+        <option value="" disabled selected hidden>Selecione uma opção</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+        </select>
+      </div>
 
-      <br />
+   
 
       {/* Novo seletor para os municípios */}
       {municipios.length > 0 && (
         <div>
           <label htmlFor="municipio">Município:</label>
-          <select id="municipio">
-            {municipios.map((municipio, index) => (
-              <option key={index} value={municipio}>
-                {municipio}
-              </option>
-            ))}
-          </select>
+          <div>
+            <select id="municipio">
+              {municipios.map((municipio, index) => (
+                <option key={index} value={municipio}>
+                  {municipio}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       )}
 
-      <br />
+    
 
       <label htmlFor="numeroDiarias">Número de Diárias:</label>
-      <input
-        type="number"
-        id="numeroDiarias"
-        min="1"
-        value={numeroDiarias}
-        onChange={handleNumeroDiariasChange}
-      />
+      <div>
+        <input
+          type="number"
+          id="numeroDiarias"
+          min="1"
+          value={numeroDiarias}
+          onChange={handleNumeroDiariasChange}
+        />
+      </div>
 
-      <br />
+    
       <p>Total: R${totalDiarias.toFixed(2)}</p>
 
-      {/* Botão para calcular diárias e gerar PDF */}
-      <button onClick={handleCalcularDiaria}>
-        Calcular Total de Diárias e Gerar PDF
-      </button>
-
-      <br />
-
-      {/* Elemento para exibir o resultado */}
-      <div ref={contentRef}>
-        <p>Resumo do Relatório:</p>
-        <p>Tipo de Cargo: {tipoCargo === '1' ? 'Servidor' : 'Diretor'}</p>
-        <p>Tipo de Viagem: {tipoViagem === '1' ? 'Intermunicipal' : 'Interestadual'}</p>
-        <p>Grupo de Municípios: {grupoViagem}</p>
-        <p>Município Selecionado: {/* Adicione aqui o código para obter o município selecionado */}</p>
-        <p>Número de Diárias: {numeroDiarias || ''}</p>
-        
-      </div>
+      
     </div>
   );
 };
