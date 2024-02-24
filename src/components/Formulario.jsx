@@ -1,28 +1,48 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { DevTool } from "@hookform/devtools";
-import generatePDF, {Margin} from "react-to-pdf";
-import "../App.css";
+import { PDFDownloadLink, Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
 import Diarias from "./Diarias";
+import "../App.css";
+
+
+const styles = StyleSheet.create({
+  page: {
+    flexDirection: 'column',
+    backgroundColor: '#FFFF'
+  },
+  section: {
+    margin: 10,
+    padding: 10,
+    flexGrow: 1
+  },
+  title: {
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 5
+  }
+});
+
+const MyDocument = ({form}) => (
+  <Document>
+    <Page size="A4" style={styles.page}>
+      <Text style={styles.title}>GOVERNO DO ESTADO DO PARÁ</Text>
+      <Text style={styles.title}>ADEPARA</Text>
+      <View style={styles.section}>
+        <Text>Setor: {form.setor}</Text>
+        <Text>Beneficiário: {form.beneficiario}</Text>
+        <Text>Cargo/Função: {form.cago_funcao}</Text>
+      </View>
+
+    </Page>
+  </Document>
+);
 
 export const Formulario = () => {
-  const form = useForm();
-  const { register, control, handleSubmit, formState } = form;
-  const { errors } = formState;
+  const { register, handleSubmit } = useForm();
+  
+  const [form, setForm] = React.useState(null);
 
-  const onSubmit = (data) => {
-    console.log("Form submitted", data);
-  };
-
-  const gerarPDF = () => document.getElementById('content-id');
-  const personalizarPDF = {
-    method: 'open',
-    page: {
-      margin: Margin.MEDIUM,
-      format: 'A4',
-      orientation: 'portrait',
-   },
-  }
+  const onSubmit = data => setForm(data);
 
   return (
     <div>
@@ -40,7 +60,7 @@ export const Formulario = () => {
         <div className="content">
           <div className="description">
             <p>
-              Solicitamos a liberação de diária (a), conforme dados descritos
+              Solicitamos a liberação de diária, conforme dados descritos
               abaixo, declarando que me responsabilizo administrativamente por
               ter conferido que o servidor designado para a ação não possui
               pendências de relatórios de viagem e suprimentos de fundos deste
@@ -68,9 +88,9 @@ export const Formulario = () => {
                           type="text"
                           name="setor_solicitante"
                           id="setor"
-                          {...register("setor", { required: "Campo inválido" })}
+                          {...register("setor", )}
                         />
-                        <p className="error">{errors.setor?.message}</p>
+                        
                       </div>
                     </div>
                     <div>
@@ -80,11 +100,9 @@ export const Formulario = () => {
                           type="text"
                           name="beneficiario"
                           id="beneficiario"
-                          {...register("beneficiario", {
-                            required: "Campo inválido",
-                          })}
+                          {...register("beneficiario", )}
                         />
-                        <p className="error">{errors.beneficiario?.message}</p>
+                        
                       </div>
                     </div>
                     <div>
@@ -94,11 +112,9 @@ export const Formulario = () => {
                           type="text"
                           name="cargo_funcao"
                           id="cargo_funcao"
-                          {...register("cargo_funcao", {
-                            required: "Campo inválido",
-                          })}
+                          {...register("cargo_funcao", )}
                         />
-                        <p className="error">{errors.setor?.message}</p>
+                        
                       </div>
                     </div>
                     <div>
@@ -108,9 +124,9 @@ export const Formulario = () => {
                           type="number"
                           name="matricula"
                           id="matricula"
-                          {...register("matricula", { required: "Campo inválido" })}
+                          {...register("matricula", )}
                         />
-                        <p className="error">{errors.setor?.message}</p>
+                        
                       </div>
                     </div>
                     <div>
@@ -120,9 +136,9 @@ export const Formulario = () => {
                           type="text"
                           name="banco"
                           id="banco"
-                          {...register("banco", { required: "Campo inválido" })}
+                          {...register("banco", )}
                         />
-                        <p className="error">{errors.setor?.message}</p>
+                       
                       </div>
                     </div>
                     <div>
@@ -132,9 +148,9 @@ export const Formulario = () => {
                           type="text"
                           name="agencia"
                           id="agencia"
-                          {...register("agencia", { required: "Campo inválido" })}
+                          {...register("agencia", )}
                         />
-                        <p className="error">{errors.setor?.message}</p>
+                       
                       </div>
                     </div>
                     <div>
@@ -144,11 +160,9 @@ export const Formulario = () => {
                           type="text"
                           name="conta_corrente"
                           id="conta_corrente"
-                          {...register("conta_corrente", {
-                            required: "Campo inválido",
-                          })}
+                          {...register("conta_corrente", )}
                         />
-                        <p className="error">{errors.setor?.message}</p>
+                        
                       </div>
                     </div>
                     <div>
@@ -158,11 +172,9 @@ export const Formulario = () => {
                           type="text"
                           name="municipio_lotacao"
                           id="municipio_lotacao"
-                          {...register("municipio_lotacao", {
-                            required: "Campo inválido",
-                          })}
+                          {...register("municipio_lotacao",) }
                         />
-                        <p className="error">{errors.setor?.message}</p>
+                        
                       </div>
                     </div>
                     <div>
@@ -172,11 +184,9 @@ export const Formulario = () => {
                           type="text"
                           name="motivacao"
                           id="motivacao:"
-                          {...register("motivacao:", {
-                            required: "Campo inválido",
-                          })}
+                          {...register("motivacao:", )}
                         />
-                        <p className="error">{errors.motivacao?.message}</p>
+                       
                       </div>
                     </div>
                     <div>
@@ -186,9 +196,9 @@ export const Formulario = () => {
                           type="text"
                           name="periodo"
                           id="periodo"
-                          {...register("periodo", { required: "Campo inválido" })}
+                          {...register("periodo", )}
                         />
-                        <p className="error">{errors.periodo?.message}</p>
+                       
                       </div>
                     </div>
                     <div>
@@ -198,24 +208,21 @@ export const Formulario = () => {
                           type="text"
                           name="observacao"
                           id="observacao"
-                          {...register("observacao", {
-                            required: "Campo inválido",
-                          })}
+                          {...register("observacao", )}
                         />
-                        <p className="error">{errors.observacao?.message}</p>
+                        
                       </div>
                     </div>
                   </div>
                   <div className="second_section">
                     <Diarias />
                     <div className="generatePDF">
-                      <button
-                        onClick={() =>
-                          generatePDF(gerarPDF, personalizarPDF)
-                        }
-                      >
-                        Gerar PDF
-                      </button>
+                     <input type="submit" />
+                    {form && (
+                      <PDFDownloadLink document={<MyDocument form={form} />} fileName="form.pdf">
+                      {({ blob, url, loading, error }) => (loading ? 'Carregando documento...' : 'Baixar PDF')}
+                    </PDFDownloadLink>
+                    )}
                     </div>
                   </div>
                 </div>
