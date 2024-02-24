@@ -129,16 +129,15 @@ const Diarias = () => {
       <button onClick={adicionarDestino}>Adicionar Destino</button>
       <p id="resultado">O valor total das diárias é: R${totalDiarias.toFixed(2)}</p>
       <div>
-        <h3>Destinos Selecionados</h3>
+        <h4>Destinos Selecionados</h4>
         {destinosSelecionados.map((destino, index) => (
           <div key={index}>
             <p>Município: {destino.municipio}</p>
-            <p>Grupo: {destino.grupo}</p>
             <p>Número de Diárias: {destino.numeroDiarias}</p>
             <p>Total Diárias: R${destino.totalDiarias.toFixed(2)}</p>
           </div>
         ))}
-        <h3>Total de Todas as Diárias</h3>
+        <h4>Total de Todas as Diárias</h4>
         <p>R${calcularTotalTodasDiarias().toFixed(2)}</p>
       </div>
     </div>
