@@ -1,36 +1,59 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { PDFDownloadLink, Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
+import {  PDFDownloadLink, Page, Text, View, Document, Image, StyleSheet } from "@react-pdf/renderer";
 import Diarias from "./Diarias";
 import "../App.css";
+import logo from '../../public/images/brasao-para.png'
 
 
 const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
-    backgroundColor: '#FFFF'
+    backgroundColor: '#FFFF',
+    
   },
   section: {
-    margin: 10,
-    padding: 10,
+    margin: 20,
+    padding: 20,
     flexGrow: 1
   },
   title: {
     fontSize: 14,
     textAlign: 'center',
-    marginBottom: 5
+    marginBottom: 5,
+    fontWeight: 'bold'
+  },
+  subtitle: {
+    textTransform: 'uppercase',
+    border: 1,
+    borderColor: 'black',
+    borderStyle: 'solid',
+    backgroundColor: '#c0bbbb'
+  },
+  text: {
+    textTransform: 'uppercase',
+    fontSize: 12
+  },
+  image: {
+    width: 100,
+    height: 100,
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center'
   }
 });
 
 const MyDocument = ({form}) => (
-  <Document>
+    <Document>
     <Page size="A4" style={styles.page}>
+      <Image style={styles.image} src={logo} />
       <Text style={styles.title}>GOVERNO DO ESTADO DO PARÁ</Text>
-      <Text style={styles.title}>ADEPARA</Text>
+      <Text style={styles.title}>AGÊNCIA DE DEFESA AGROPECUÁRIA DO PARÁ</Text>
       <View style={styles.section}>
-        <Text>Setor: {form.setor}</Text>
-        <Text>Beneficiário: {form.beneficiario}</Text>
-        <Text>Cargo/Função: {form.cago_funcao}</Text>
+        <Text style={styles.subtitle}>Papeleta de despesa</Text>
+        <Text style={styles.text}>Setor: {form.setor}</Text>
+        <Text style={styles.text}>Beneficiário: {form.beneficiario}</Text>
+        <Text style={styles.text}>Cargo/Função: {form.cago_funcao}</Text>
       </View>
 
     </Page>
@@ -217,7 +240,7 @@ export const Formulario = () => {
                   <div className="second_section">
                     <Diarias />
                     <div className="generatePDF">
-                     <input type="submit" />
+                     <button type="submit" >Gerar PDF</button>
                     {form && (
                       <PDFDownloadLink document={<MyDocument form={form} />} fileName="form.pdf">
                       {({ blob, url, loading, error }) => (loading ? 'Carregando documento...' : 'Baixar PDF')}

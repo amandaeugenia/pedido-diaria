@@ -4,9 +4,10 @@ import Select from 'react-select';
 const Diarias = () => {
   const [tipoCargo, setTipoCargo] = useState('1');
   const [tipoViagem, setTipoViagem] = useState('1');
-  const [municipiosSelecionados, setMunicipiosSelecionados] = useState([]);
+  const [municipioSelecionado, setMunicipioSelecionado] = useState(null);
   const [numeroDiarias, setNumeroDiarias] = useState('');
   const [totalDiarias, setTotalDiarias] = useState(0);
+  const [destinosSelecionados, setDestinosSelecionados] = useState([]);
 
   const destinos = [
     { value: 'ANANINDEUA', label: 'ANANINDEUA', grupo: 'A' },
@@ -22,40 +23,32 @@ const Diarias = () => {
 
   useEffect(() => {
     calcularDiaria();
-  }, [numeroDiarias, tipoCargo, tipoViagem, municipiosSelecionados]);
+  }, [numeroDiarias, tipoCargo, tipoViagem, municipioSelecionado]);
 
   const calcularDiaria = () => {
-    let valorDiaria = 0;
-
-    if (tipoCargo === '1') { // Servidor
-      if (tipoViagem === '1') { // Intermunicipal
-        valorDiaria = municipiosSelecionados.reduce((acc, municipio) => {
-          const valorMunicipio = municipio.grupo === 'A' ? 167.05 : (municipio.grupo === 'B' ? 237.38 : 0);
-          return acc + valorMunicipio;
-        }, 0);
-      } else if (tipoViagem === '2') { // Interestadual
-        valorDiaria = municipiosSelecionados.reduce((acc, municipio) => {
-          const valorMunicipio = municipio.grupo === 'C' ? 422.02 : 0;
-          return acc + valorMunicipio;
-        }, 0);
-      }
-    } else if (tipoCargo === '2') { // Diretor
-      if (tipoViagem === '1') { // Intermunicipal
-        valorDiaria = municipiosSelecionados.reduce((acc, municipio) => {
-          const valorMunicipio = municipio.grupo === 'A' ? 211.01 : (municipio.grupo === 'B' ? 276.07 : 0);
-          return acc + valorMunicipio;
-        }, 0);
-      } else if (tipoViagem === '2') { // Interestadual
-        valorDiaria = municipiosSelecionados.reduce((acc, municipio) => {
-          const valorMunicipio = municipio.grupo === 'C' ? 474.77 : 0;
-          return acc + valorMunicipio;
-        }, 0);
-      }
-    }
+    const valorDiaria = municipioSelecionado ? calcularValorDiaria(municipioSelecionado) : 0;
 
     const numeroDiariasFloat = parseFloat(numeroDiarias);
-
     setTotalDiarias(numeroDiariasFloat ? valorDiaria * numeroDiariasFloat : 0);
+  };
+
+  const calcularValorDiaria = (municipio) => {
+    switch (tipoCargo) {
+      case '1': // Servidor
+        return tipoViagem === '1' ? calcularValorDiariaIntermunicipal(municipio) : calcularValorDiariaInterestadual(municipio);
+      case '2': // Diretor
+        return tipoViagem === '1' ? calcularValorDiariaIntermunicipal(municipio) : calcularValorDiariaInterestadual(municipio);
+      default:
+        return 0;
+    }
+  };
+
+  const calcularValorDiariaIntermunicipal = (municipio) => {
+    return municipio.grupo === 'A' ? 167.05 : (municipio.grupo === 'B' ? 237.38 : 0);
+  };
+
+  const calcularValorDiariaInterestadual = (municipio) => {
+    return municipio.grupo === 'C' ? 422.02 : 0;
   };
 
   const handleTipoCargoChange = (event) => {
@@ -64,14 +57,33 @@ const Diarias = () => {
 
   const handleTipoViagemChange = (event) => {
     setTipoViagem(event.target.value);
+    setMunicipioSelecionado(null);
   };
 
   const handleNumeroDiariasChange = (event) => {
     setNumeroDiarias(event.target.value);
   };
 
-  const handleMunicipiosChange = (selectedOptions) => {
-    setMunicipiosSelecionados(selectedOptions);
+  const handleMunicipioChange = (selectedOption) => {
+    setMunicipioSelecionado(selectedOption);
+  };
+
+  const adicionarDestino = () => {
+    if (municipioSelecionado) {
+      const novoDestino = {
+        municipio: municipioSelecionado.value,
+        grupo: municipioSelecionado.grupo,
+        numeroDiarias: numeroDiarias,
+        totalDiarias: calcularValorDiaria(municipioSelecionado) * parseFloat(numeroDiarias),
+      };
+
+      setDestinosSelecionados([...destinosSelecionados, novoDestino]);
+      setMunicipioSelecionado(null);
+    }
+  };
+
+  const calcularTotalTodasDiarias = () => {
+    return destinosSelecionados.reduce((total, destino) => total + destino.totalDiarias, 0);
   };
 
   return (
@@ -93,7 +105,7 @@ const Diarias = () => {
       <div>
         <label htmlFor="municipios">Destinos:</label>
         <Select
-          isMulti
+          isMulti={false}
           options={destinos.filter(destino => {
             if (tipoViagem === '1') {
               return destino.grupo === 'A' || destino.grupo === 'B';
@@ -101,7 +113,8 @@ const Diarias = () => {
               return destino.grupo === 'C';
             }
           })}
-          onChange={handleMunicipiosChange}
+          onChange={handleMunicipioChange}
+          value={municipioSelecionado}
         />
       </div>
       <div>
@@ -113,8 +126,20 @@ const Diarias = () => {
           onChange={handleNumeroDiariasChange}
         />
       </div>
+      <button onClick={adicionarDestino}>Adicionar Destino</button>
+      <p id="resultado">O valor total das diárias é: R${totalDiarias.toFixed(2)}</p>
       <div>
-        <p id="resultado">O valor total das diárias é: R${totalDiarias.toFixed(2)}</p>
+        <h3>Destinos Selecionados</h3>
+        {destinosSelecionados.map((destino, index) => (
+          <div key={index}>
+            <p>Município: {destino.municipio}</p>
+            <p>Grupo: {destino.grupo}</p>
+            <p>Número de Diárias: {destino.numeroDiarias}</p>
+            <p>Total Diárias: R${destino.totalDiarias.toFixed(2)}</p>
+          </div>
+        ))}
+        <h3>Total de Todas as Diárias</h3>
+        <p>R${calcularTotalTodasDiarias().toFixed(2)}</p>
       </div>
     </div>
   );
