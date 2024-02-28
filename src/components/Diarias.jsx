@@ -96,48 +96,60 @@ const Diarias = ({tipoCargo,
 
   return (
     <div>
-      <div>
-        <label htmlFor="tipoCargo">Cargo Beneficiário:</label>
-        <select id="tipoCargo" value={tipoCargo} onChange={handleTipoCargoChange}>
-          <option value="1">Servidores</option>
-          <option value="2">DG</option>
-        </select>
+      <div className='form_table'>
+        <div>
+          <label htmlFor="tipoCargo">Cargo Beneficiário:</label>
+          <select id="tipoCargo" value={tipoCargo} onChange={handleTipoCargoChange}>
+            <option value="1">Demais Servidores</option>
+            <option value="2">DG</option>
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="tipoViagem">Tipo de Viagem:</label>
+          <select id="tipoViagem" value={tipoViagem} onChange={handleTipoViagemChange}>
+            <option value="1">Intermunicipal</option>
+            <option value="2">Interestadual</option>
+          </select>
+        </div>
+ 
       </div>
-      <div>
-        <label htmlFor="tipoViagem">Tipo de Viagem:</label>
-        <select id="tipoViagem" value={tipoViagem} onChange={handleTipoViagemChange}>
-          <option value="1">Intermunicipal</option>
-          <option value="2">Interestadual</option>
-        </select>
+      <div className='table_destino'>
+        <div>
+          <label htmlFor="municipios">Destinos:</label>
+          <Select
+          className='select_form'
+            isMulti={false}
+            options={destinos.filter(destino => {
+              if (tipoViagem === '1') {
+                return destino.grupo === 'A' || destino.grupo === 'B';
+              } else {
+                return destino.grupo === 'C';
+              }
+            })}
+            onChange={handleMunicipioChange}
+            value={municipioSelecionado}
+          />
+          <p id="resultado">Valor: R${totalDiarias.toFixed(2)}</p> 
+        </div>
+        <div>
+          <label htmlFor="numeroDiarias">Número de Diárias:</label>
+          <div>
+            <input
+              type="number"
+              id="numeroDiarias"
+              value={numeroDiarias}
+              onChange={handleNumeroDiariasChange}
+            />
+          </div>
+        </div>
       </div>
-      <div>
-        <label htmlFor="municipios">Destinos:</label>
-        <Select
-          isMulti={false}
-          options={destinos.filter(destino => {
-            if (tipoViagem === '1') {
-              return destino.grupo === 'A' || destino.grupo === 'B';
-            } else {
-              return destino.grupo === 'C';
-            }
-          })}
-          onChange={handleMunicipioChange}
-          value={municipioSelecionado}
-        />
+      <div className="btn-destino">
+        <button onClick={adicionarDestino}>Adicionar Destino</button>
+        
       </div>
-      <div>
-        <label htmlFor="numeroDiarias">Número de Diárias:</label>
-        <input
-          type="number"
-          id="numeroDiarias"
-          value={numeroDiarias}
-          onChange={handleNumeroDiariasChange}
-        />
-      </div>
-      <button onClick={adicionarDestino}>Adicionar Destino</button>
-      <p id="resultado">O valor total das diárias é: R${totalDiarias.toFixed(2)}</p>
-      <div>
-        <h4>Destinos Selecionados</h4>
+      <div className='result-container'>
+      <h4>Resultado:</h4>
         {destinosSelecionados.map((destino, index) => (
           <div key={index}>
             <p>Município: {destino.municipio}</p>
@@ -145,7 +157,7 @@ const Diarias = ({tipoCargo,
             <p>Total Diárias: R${destino.totalDiarias.toFixed(2)}</p>
           </div>
         ))}
-        <h4>Total de Todas as Diárias</h4>
+        <h4>Total:</h4>
         <p>R${calcularTotalTodasDiarias.toFixed(2)}</p>
       </div>
     </div>

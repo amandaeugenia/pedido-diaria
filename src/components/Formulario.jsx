@@ -163,127 +163,139 @@ export const Formulario = () => {
             <div id="content-id">
               <div className="dados_form">
                 <div className="first_section">
-                  <div>
-                    <label htmlFor="setor">Setor Solicitante: </label>
+                  <div className="form_table">
                     <div>
-                      <input
-                        type="text"
-                        name="setor_solicitante"
-                        id="setor"
-                        {...register("setor")}
-                      />
+                      <label htmlFor="setor">Setor Solicitante: </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="setor_solicitante"
+                          id="setor"
+                          {...register("setor")}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label htmlFor="beneficiario">Beneficiário: </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="beneficiario"
+                          id="beneficiario"
+                          {...register("beneficiario")}
+                        />
+                      </div>
+                    </div>
+                   
+                    <div>
+                      <label htmlFor="cargo-funcao">Cargo/Função</label>
+                      <div>
+                        <input
+                          type="text"
+                          name="cargo_funcao"
+                          id="cargo_funcao"
+                          {...register("cargo_funcao")}
+                        />
+                      </div>
                     </div>
                   </div>
-                  <div>
-                    <label htmlFor="beneficiario">Beneficiário: </label>
+                  <div className="form_table">
                     <div>
-                      <input
-                        type="text"
-                        name="beneficiario"
-                        id="beneficiario"
-                        {...register("beneficiario")}
-                      />
+                      <label htmlFor="">Matrícula</label>
+                      <div>
+                        <input
+                          type="number"
+                          name="matricula"
+                          id="matricula"
+                          {...register("matricula")}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label htmlFor="">Banco</label>
+                      <div>
+                        <input
+                          type="text"
+                          name="banco"
+                          id="banco"
+                          {...register("banco")}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label htmlFor="">Agência: </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="agencia"
+                          id="agencia"
+                          {...register("agencia")}
+                        />
+                      </div>
                     </div>
                   </div>
-                  <div>
-                    <label htmlFor="">Cargo/Função</label>
+                  <div className="form_table">
                     <div>
-                      <input
-                        type="text"
-                        name="cargo_funcao"
-                        id="cargo_funcao"
-                        {...register("cargo_funcao")}
-                      />
+                      <label htmlFor="">Conta Corrente: </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="conta_corrente"
+                          id="conta_corrente"
+                          {...register("conta_corrente")}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <label htmlFor="">Matrícula</label>
                     <div>
-                      <input
-                        type="number"
-                        name="matricula"
-                        id="matricula"
-                        {...register("matricula")}
-                      />
+                      <label htmlFor="">Município de Lotação</label>
+                      <div>
+                        <input
+                          type="text"
+                          name="municipio_lotacao"
+                          id="municipio_lotacao"
+                          {...register("municipio_lotacao")}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <label htmlFor="">Banco</label>
                     <div>
-                      <input
-                        type="text"
-                        name="banco"
-                        id="banco"
-                        {...register("banco")}
-                      />
+                      <label htmlFor="">Período:</label>
+                      <div>
+                        <input
+                          type="text"
+                          name="periodo"
+                          id="periodo"
+                          {...register("periodo")}
+                        />
+                      </div>
                     </div>
+
                   </div>
+                  <div className="form_table">
                   <div>
-                    <label htmlFor="">Agência: </label>
+                      <label htmlFor="">Motivação:</label>
+                      <div>
+                        <textarea
+                          type="text"
+                          name="motivacao"
+                          id="motivacao:"
+                          {...register("motivacao:")}
+                          cols="40" rows="10"
+                        />
+                      </div>
+                    </div>
                     <div>
-                      <input
-                        type="text"
-                        name="agencia"
-                        id="agencia"
-                        {...register("agencia")}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label htmlFor="">Conta Corrente: </label>
-                    <div>
-                      <input
-                        type="text"
-                        name="conta_corrente"
-                        id="conta_corrente"
-                        {...register("conta_corrente")}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label htmlFor="">Município de Lotação</label>
-                    <div>
-                      <input
-                        type="text"
-                        name="municipio_lotacao"
-                        id="municipio_lotacao"
-                        {...register("municipio_lotacao")}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label htmlFor="">Motivação:</label>
-                    <div>
-                      <input
-                        type="text"
-                        name="motivacao"
-                        id="motivacao:"
-                        {...register("motivacao:")}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label htmlFor="">Período:</label>
-                    <div>
-                      <input
-                        type="text"
-                        name="periodo"
-                        id="periodo"
-                        {...register("periodo")}
-                      />
-                    </div>
-                  </div>
-                  <div>
                     <label htmlFor="">Observação:</label>
                     <div>
-                      <input
-                        type="text"
+                      <textarea
                         name="observacao"
                         id="observacao"
                         {...register("observacao")}
+                        cols="40" rows="10"
                       />
                     </div>
                   </div>
+                  </div>
+                  
                 </div>
                 <div className="second_section">
                   <Diarias
