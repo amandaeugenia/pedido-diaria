@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 
-const Diarias = () => {
-  const [tipoCargo, setTipoCargo] = useState('1');
-  const [tipoViagem, setTipoViagem] = useState('1');
-  const [municipioSelecionado, setMunicipioSelecionado] = useState(null);
-  const [numeroDiarias, setNumeroDiarias] = useState('');
-  const [totalDiarias, setTotalDiarias] = useState(0);
-  const [destinosSelecionados, setDestinosSelecionados] = useState([]);
+const Diarias = ({tipoCargo,
+  setTipoCargo,
+  tipoViagem,
+  setTipoViagem,
+  municipioSelecionado,
+  setMunicipioSelecionado,
+  numeroDiarias,
+  setNumeroDiarias,
+  totalDiarias,
+  setTotalDiarias,
+  destinosSelecionados,
+  setDestinosSelecionados,
+  setSomaDiarias
+  }) => {
 
   const destinos = [
     { value: 'ANANINDEUA', label: 'ANANINDEUA', grupo: 'A' },
@@ -82,9 +89,10 @@ const Diarias = () => {
     }
   };
 
-  const calcularTotalTodasDiarias = () => {
-    return destinosSelecionados.reduce((total, destino) => total + destino.totalDiarias, 0);
-  };
+  const calcularTotalTodasDiarias = destinosSelecionados.reduce((total, destino) => total + destino.totalDiarias, 0);
+  setSomaDiarias(calcularTotalTodasDiarias);
+
+  console.log(calcularTotalTodasDiarias)
 
   return (
     <div>
@@ -138,7 +146,7 @@ const Diarias = () => {
           </div>
         ))}
         <h4>Total de Todas as Diárias</h4>
-        <p>R${calcularTotalTodasDiarias().toFixed(2)}</p>
+        <p>R${calcularTotalTodasDiarias.toFixed(2)}</p>
       </div>
     </div>
   );

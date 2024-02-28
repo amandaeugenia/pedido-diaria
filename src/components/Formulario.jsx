@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from 'react';
 import { useForm } from "react-hook-form";
+
 import {
   PDFDownloadLink,
   Page,
@@ -15,8 +16,8 @@ import logo from "../../public/images/brasao-para.png";
 
 const styles = StyleSheet.create({
   page: {
-    flexDirection: "column",
-    backgroundColor: "#FFFF",
+    flexDirection: 'column',
+    backgroundColor: '#FFFF',
   },
   section: {
     margin: 20,
@@ -25,45 +26,61 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 14,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: 5,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   subtitle: {
     fontSize: 14,
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
     border: 1,
     padding: 8,
     marginBottom: 12,
-    borderColor: "black",
-    borderStyle: "solid",
-    backgroundColor: "#c0bbbb",
+    borderColor: 'black',
+    borderStyle: 'solid',
+    backgroundColor: '#c0bbbb',
   },
   text: {
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
     fontSize: 12,
   },
   subtext: {
     fontSize: 12,
-    marginBottom: 32
+    marginBottom: 32,
   },
   imageContainer: {
-    width: 100, // Largura desejada
-    height: 100, // Altura desejada
-    alignSelf: "center", // Centraliza horizontalmente na página
-    marginTop: "auto", // Centraliza verticalmente na página
-    marginBottom: "auto", // Centraliza verticalmente na página
+    width: 100,
+    height: 100,
+    alignSelf: 'center',
+    marginTop: 'auto',
+    marginBottom: 'auto',
   },
-  image: {},
+  table: {
+    display: 'table',
+    width: '100%',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#bfbfbf',
+    marginBottom: 10,
+  },
+  tableRow: {
+    margin: 'auto',
+    flexDirection: 'row',
+    borderBottomColor: '#bfbfbf',
+    borderBottomWidth: 1,
+  },
+  tableCell: {
+    margin: 'auto',
+    padding: 5,
+  },
 });
 
-const MyDocument = ({ form }) => (
+const MyDocument = ({ form, destinosSelecionados, somaDiarias }) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <Image src={logo} style={styles.imageContainer} />
       <Text style={styles.title}>GOVERNO DO ESTADO DO PARÁ</Text>
       <Text style={styles.title}>AGÊNCIA DE DEFESA AGROPECUÁRIA DO PARÁ</Text>
-
       <View style={styles.section}>
         <Text style={styles.subtitle}>Papeleta de despesa</Text>
         <Text style={styles.subtext}>
@@ -72,7 +89,23 @@ const MyDocument = ({ form }) => (
         </Text>
         <Text style={styles.text}>Setor: {form.setor}</Text>
         <Text style={styles.text}>Beneficiário: {form.beneficiario}</Text>
-        <Text style={styles.text}>Cargo/Função: {form.cago_funcao}</Text>
+        <Text style={styles.text}>Cargo/Função: {form.cargo_funcao}</Text>
+        <Text style={styles.text}>Destinos Selecionados:</Text>
+        <View style={styles.table}>
+          <View style={styles.tableRow}>
+            <Text style={styles.tableCell}>Município</Text>
+            <Text style={styles.tableCell}>Número de Diárias</Text>
+            <Text style={styles.tableCell}>Valor Total</Text>
+          </View>
+          {destinosSelecionados.map((destino, index) => (
+            <View key={index} style={styles.tableRow}>
+              <Text style={styles.tableCell}>{destino.municipio}</Text>
+              <Text style={styles.tableCell}>{destino.numeroDiarias}</Text>
+              <Text style={styles.tableCell}>{destino.totalDiarias}</Text>
+            </View>
+          ))}
+        </View>
+        <Text style={styles.text}>Total: {somaDiarias}</Text>
       </View>
     </Page>
   </Document>
@@ -80,8 +113,17 @@ const MyDocument = ({ form }) => (
 
 export const Formulario = () => {
   const { register, handleSubmit } = useForm();
-
   const [form, setForm] = React.useState(null);
+
+  // Componentes Diarias.jsx
+  const [tipoCargo, setTipoCargo] = useState('1');
+  const [tipoViagem, setTipoViagem] = useState('1');
+  const [municipioSelecionado, setMunicipioSelecionado] = useState(null);
+  const [numeroDiarias, setNumeroDiarias] = useState('');
+  const [totalDiarias, setTotalDiarias] = useState(0);
+  const [destinosSelecionados, setDestinosSelecionados] = useState([]);
+  const [somaDiarias, setSomaDiarias] = useState(0);
+  console.log(totalDiarias)
 
   const onSubmit = (data) => setForm(data);
 
@@ -244,11 +286,33 @@ export const Formulario = () => {
                   </div>
                 </div>
                 <div className="second_section">
-                  <Diarias />
+                  <Diarias
+                    setSomaDiarias={setSomaDiarias}
+                    tipoCargo={tipoCargo}
+                    setTipoCargo={setTipoCargo}
+                    tipoViagem={tipoViagem}
+                    setTipoViagem={setTipoViagem}
+                    municipioSelecionado={municipioSelecionado}
+                    setMunicipioSelecionado={setMunicipioSelecionado}
+                    numeroDiarias={numeroDiarias}
+                    setNumeroDiarias={setNumeroDiarias}
+                    totalDiarias={totalDiarias}
+                    setTotalDiarias={setTotalDiarias}
+                    destinosSelecionados={destinosSelecionados}
+                    setDestinosSelecionados={setDestinosSelecionados}
+                  />
                   <div className="generatePDF">
                     {form && (
                       <PDFDownloadLink
-                        document={<MyDocument form={form} />}
+                        document={<MyDocument
+                          form={form}
+                          somaDiarias={somaDiarias}
+                          tipoCargo={tipoCargo}
+                          tipoViagem={tipoViagem}
+                          municipioSelecionado={municipioSelecionado}
+                          numeroDiarias={numeroDiarias}
+                          destinosSelecionados={destinosSelecionados}
+                        />}
                         fileName="form.pdf"
                       >
                         {({ blob, url, loading, error }) =>
