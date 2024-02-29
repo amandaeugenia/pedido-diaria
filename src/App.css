@@ -3,11 +3,12 @@
     padding: 0;
     font-family: sans-serif;
     border-radius: 12px;
-    
 }
+
 body {
     background-color: #0d204b;
 }
+
 .header {
     display: flex;
     width: 100%;
@@ -15,98 +16,105 @@ body {
     background-color: #fff;
     margin-bottom: 40px;
 }
+
 .logo img {
     display: flex;
     width: 250px;
     padding: 16px;
 }
+
 .main-container {
     margin: auto;
-  
-   
     background-color: #fff;
     width: 70vw;
 }
+
 .title {
-    margin: 20px;
     padding: 40px;
     text-align: center;
 }
+
 .content {
-    
+
     width: 60%;
     align-items: center;
     justify-content: center;
     margin: auto;
     padding: 20px;
 }
+
 .description {
     text-align: left;
     margin-bottom: 10px;
 }
 
-
-
 form {
     display: flex;
     justify-content: center;
-    align-items: center;   
+    align-items: center;
 }
 
 .form_table {
     display: flex;
     gap: 20px;
 }
+
 .form_table select {
     margin: 8px;
 }
-.dados_form{
-    gap: 50px;   
-    margin: 20px; 
+.form_table textarea {
+    padding: 8px;
 }
-.dados_form  div{
+
+.dados_form {
+    gap: 50px;
+    margin: 20px;
+}
+
+.dados_form div {
     margin-bottom: 8px;
     margin-top: 8px;
 }
 
-.second_section  select, input{
+.second_section select,
+input {
     padding: 8px;
 }
-.select_form {
-    width: 200px;
-   
+
+input {
+    width: 180px;
 }
+
+
 .table_destino {
     display: flex;
     gap: 110px;
 }
+
 .table_destino p {
     margin-top: 28px;
 }
-.result-container{
+.select_form {
+    width: 200px;
+}
+.result-container {
     border: 1px solid #d1d0d0;
     padding: 20px;
     line-height: 30px;
 }
-.btn-destino button{
+
+.btn-destino button {
     padding: 10px;
     margin: 10px;
 }
+
 .error {
     color: red;
     text-align: left;
     font-size: 12px;
 }
 
-.generatePDF button{
-    padding: 12px;
-    border-radius: 12px;
-    width: 120px;
-    margin-top: 20px;
-    background-color: #fff;
+.btn-destino button{
     cursor: pointer;
-}
-
-.generatePDF button:hover {
-    background-color: #d1d0d0;
+    padding: 16px;
 }

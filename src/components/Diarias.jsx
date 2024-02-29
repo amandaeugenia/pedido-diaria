@@ -158,7 +158,7 @@ const Diarias = ({tipoCargo,
           </div>
         ))}
         <h4>Total:</h4>
-        <p>R${calcularTotalTodasDiarias.toFixed(2)}</p>
+        <p className='result'>R${calcularTotalTodasDiarias.toFixed(2)}</p>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { format } from "date-fns";
 
 import {
   PDFDownloadLink,
@@ -14,10 +15,16 @@ import Diarias from "./Diarias";
 import "../App.css";
 import logo from "../../public/images/brasao-para.png";
 
+const getFormattedDate = () => {
+  const currentDate = new Date();
+  return format(currentDate, "dd/MM/yyyy HH:mm:ss");
+};
+
 const styles = StyleSheet.create({
   page: {
-    flexDirection: 'column',
-    backgroundColor: '#FFFF',
+    flexDirection: "column",
+    backgroundColor: "#FFFF",
+    paddingRight: 20,
   },
   section: {
     margin: 20,
@@ -25,53 +32,89 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   title: {
-    fontSize: 14,
-    textAlign: 'center',
-    marginBottom: 5,
-    fontWeight: 'bold',
+    fontSize: 10,
+    textAlign: "center",
+    marginTop: 16,
+    fontWeight: "bold",
   },
   subtitle: {
-    fontSize: 14,
-    textTransform: 'uppercase',
+    fontSize: 10,
+    textTransform: "uppercase",
+    textAlign: "center",
     border: 1,
     padding: 8,
     marginBottom: 12,
-    borderColor: 'black',
-    borderStyle: 'solid',
-    backgroundColor: '#c0bbbb',
+    borderColor: "black",
+    borderStyle: "solid",
+    backgroundColor: "#e2dede",
+    border: "none",
+    gap: 8,
+  },
+  date: {
+    textAlign: "right",
+    fontSize: 12,
+    marginBottom: 8,
   },
   text: {
-    textTransform: 'uppercase',
-    fontSize: 12,
+    textTransform: "uppercase",
+    fontSize: 10,
+    marginTop: 4,
+    fontWeight: "bold",
   },
   subtext: {
-    fontSize: 12,
-    marginBottom: 32,
+    fontSize: 10,
+    marginBottom: 20,
   },
   imageContainer: {
-    width: 100,
-    height: 100,
-    alignSelf: 'center',
-    marginTop: 'auto',
-    marginBottom: 'auto',
+    width: 70,
+    height: 70,
+    alignSelf: "center",
+    marginTop: 16,
+    marginBottom: "auto",
+  },
+  container: {
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderColor: "#bfbfbf",
+
+    marginLeft: 14,
+    padding: 10,
   },
   table: {
-    display: 'table',
-    width: '100%',
-    borderStyle: 'solid',
+    display: "table",
+    flexDirection: "row",
+    width: "100%",
+    borderStyle: "solid",
     borderWidth: 1,
-    borderColor: '#bfbfbf',
+    borderColor: "#bfbfbf",
+    justifyContent: "space-around",
+    margin: 10,
+    gap: 10,
+    padding: 4,
+  },
+  tableHeader: {
+    fontWeight: 'bold',
+    
+  },
+  tableColumn: {
+    flexDirection: "column",
+    borderRightColor: "#bfbfbf",
+    borderRightWidth: 1,
+    justifyContent: "center",
+    alignContent: "center",
+    alignItems: "center",
+    gap: 10,
+    padding: 10,
+    flex: 1,
     marginBottom: 10,
   },
   tableRow: {
-    margin: 'auto',
-    flexDirection: 'row',
-    borderBottomColor: '#bfbfbf',
-    borderBottomWidth: 1,
-  },
-  tableCell: {
-    margin: 'auto',
-    padding: 5,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignContent: "center",
+    alignItems: "center",
+    flex: 1,
+    marginBottom: 10,
   },
 });
 
@@ -79,33 +122,90 @@ const MyDocument = ({ form, destinosSelecionados, somaDiarias }) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <Image src={logo} style={styles.imageContainer} />
+
       <Text style={styles.title}>GOVERNO DO ESTADO DO PARÁ</Text>
       <Text style={styles.title}>AGÊNCIA DE DEFESA AGROPECUÁRIA DO PARÁ</Text>
       <View style={styles.section}>
+        <Text style={styles.date}>{getFormattedDate()}</Text>
         <Text style={styles.subtitle}>Papeleta de despesa</Text>
         <Text style={styles.subtext}>
           Senhor Diretor, solicitamos as necessárias providências de V. Sa.,
           para realização de despesas, conforme discriminação abaixo
         </Text>
-        <Text style={styles.text}>Setor: {form.setor}</Text>
-        <Text style={styles.text}>Beneficiário: {form.beneficiario}</Text>
-        <Text style={styles.text}>Cargo/Função: {form.cargo_funcao}</Text>
-        <Text style={styles.text}>Destinos Selecionados:</Text>
-        <View style={styles.table}>
-          <View style={styles.tableRow}>
-            <Text style={styles.tableCell}>Município</Text>
-            <Text style={styles.tableCell}>Número de Diárias</Text>
-            <Text style={styles.tableCell}>Valor Total</Text>
-          </View>
-          {destinosSelecionados.map((destino, index) => (
-            <View key={index} style={styles.tableRow}>
-              <Text style={styles.tableCell}>{destino.municipio}</Text>
-              <Text style={styles.tableCell}>{destino.numeroDiarias}</Text>
-              <Text style={styles.tableCell}>{destino.totalDiarias}</Text>
-            </View>
-          ))}
+        <View style={styles.container}>
+          <Text style={[styles.text,]}>
+            Setor: {form.setor}
+          </Text>
+          <Text style={[styles.text,]}>
+            Beneficiário: {form.beneficiario}
+          </Text>
+          <Text style={[styles.text,]}>
+            Cargo/Função: {form.cargo_funcao}
+          </Text>
+          <Text style={[styles.text, ]}>
+            Matrícula: {form.matricula}
+          </Text>
+          <Text style={[styles.text, ]}>
+            Banco: {form.banco}
+          </Text>
+          <Text style={[styles.text, ]}>
+            Agência: {form.agencia}
+          </Text>
+          <Text style={[styles.text,]}>
+            Conta corrente: {form.conta_corrente}
+          </Text>
+          <Text style={[styles.text, ]}>
+            Lotação: {form.lotacao}
+          </Text>
+          <Text style={[styles.text, ]}>
+            Período: Início: {form.periodo_inicio} Término: {form.periodo_final}
+          </Text>
+          <Text style={[styles.text, ]}>
+            Motivação: {form.motivacao}
+          </Text>
+          <Text style={[styles.text,]}>
+            Observação: {form.observacao}
+          </Text>
+          <Text style={[styles.text,]}>
+            Objetivo: {form.objetivo}
+          </Text>
         </View>
-        <Text style={styles.text}>Total: {somaDiarias}</Text>
+        <Text
+            style={[styles.text, { textAlign: 'center' }, { paddingTop: 20 }]}
+          >
+            Destinos Selecionados:
+          </Text>
+        <View style={[styles.table, ] }>
+  <View style={[styles.tableColumn,] }>
+    <Text style={[styles.text, ]}>Município</Text>
+    {destinosSelecionados.map((destino, index) => (
+      <View key={index} style={[styles.tableRow,]}>
+        <Text style={styles.text}>{destino.municipio}</Text>
+      </View>
+    ))}
+  </View>
+
+  <View style={styles.tableColumn}>
+    <Text style={[styles.text,]}>Número de Diárias</Text>
+    {destinosSelecionados.map((destino, index) => (
+      <View key={index} style={[styles.tableRow,]}>
+        <Text style={styles.text}>{destino.numeroDiarias}</Text>
+      </View>
+    ))}
+  </View>
+
+  <View style={[styles.tableColumn, { borderRightColor: 'white' }]}>
+    <Text style={[styles.text, ]}>Valor Total</Text>
+    {destinosSelecionados.map((destino, index) => (
+      <View key={index} style={[styles.tableRow,]}>
+        <Text style={styles.text}>{destino.totalDiarias}</Text>
+      </View>
+    ))}
+  </View>
+</View>
+        <Text style={[styles.text, { fontWeight: "bold" }]}>
+          Total: {somaDiarias}
+        </Text>
       </View>
     </Page>
   </Document>
@@ -116,14 +216,14 @@ export const Formulario = () => {
   const [form, setForm] = React.useState(null);
 
   // Componentes Diarias.jsx
-  const [tipoCargo, setTipoCargo] = useState('1');
-  const [tipoViagem, setTipoViagem] = useState('1');
+  const [tipoCargo, setTipoCargo] = useState("1");
+  const [tipoViagem, setTipoViagem] = useState("1");
   const [municipioSelecionado, setMunicipioSelecionado] = useState(null);
-  const [numeroDiarias, setNumeroDiarias] = useState('');
+  const [numeroDiarias, setNumeroDiarias] = useState("");
   const [totalDiarias, setTotalDiarias] = useState(0);
   const [destinosSelecionados, setDestinosSelecionados] = useState([]);
   const [somaDiarias, setSomaDiarias] = useState(0);
-  console.log(totalDiarias)
+  console.log(totalDiarias);
 
   const onSubmit = (data) => setForm(data);
 
@@ -186,7 +286,7 @@ export const Formulario = () => {
                         />
                       </div>
                     </div>
-                   
+
                     <div>
                       <label htmlFor="cargo-funcao">Cargo/Função</label>
                       <div>
@@ -247,13 +347,13 @@ export const Formulario = () => {
                       </div>
                     </div>
                     <div>
-                      <label htmlFor="">Município de Lotação</label>
+                      <label htmlFor="">Lotação</label>
                       <div>
                         <input
                           type="text"
-                          name="municipio_lotacao"
-                          id="municipio_lotacao"
-                          {...register("municipio_lotacao")}
+                          name="lotacao"
+                          id="lotacao"
+                          {...register("lotacao")}
                         />
                       </div>
                     </div>
@@ -261,41 +361,63 @@ export const Formulario = () => {
                       <label htmlFor="">Período:</label>
                       <div>
                         <input
-                          type="text"
-                          name="periodo"
-                          id="periodo"
-                          {...register("periodo")}
+                          type="date"
+                          date
+                          name="periodo_inicio"
+                          id="periodo_inicio"
+                          {...register("periodo_inicio")}           
                         />
+                        <div>
+                          <input
+                            type="date"
+                            name="periodo_final"
+                            id="periodo_final"
+                            {...register("periodo_final")}
+                          />
+                        </div>
                       </div>
                     </div>
-
                   </div>
                   <div className="form_table">
-                  <div>
+                    <div>
                       <label htmlFor="">Motivação:</label>
                       <div>
                         <textarea
                           type="text"
                           name="motivacao"
                           id="motivacao:"
-                          {...register("motivacao:")}
-                          cols="40" rows="10"
+                          {...register("motivacao")}
+                          cols="40"
+                          rows="10"
                         />
                       </div>
                     </div>
                     <div>
-                    <label htmlFor="">Observação:</label>
+                      <label htmlFor="">Observação:</label>
+                      <div>
+                        <textarea
+                          name="observacao"
+                          id="observacao"
+                          {...register("observacao")}
+                          cols="40"
+                          rows="10"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="">Objetivo:</label>
                     <div>
                       <textarea
-                        name="observacao"
-                        id="observacao"
-                        {...register("observacao")}
-                        cols="40" rows="10"
+                        type="text"
+                        name="objetivo"
+                        id="objetivo:"
+                        {...register("objetivo")}
+                        cols="90"
+                        rows="10"
                       />
                     </div>
                   </div>
-                  </div>
-                  
                 </div>
                 <div className="second_section">
                   <Diarias
@@ -316,15 +438,17 @@ export const Formulario = () => {
                   <div className="generatePDF">
                     {form && (
                       <PDFDownloadLink
-                        document={<MyDocument
-                          form={form}
-                          somaDiarias={somaDiarias}
-                          tipoCargo={tipoCargo}
-                          tipoViagem={tipoViagem}
-                          municipioSelecionado={municipioSelecionado}
-                          numeroDiarias={numeroDiarias}
-                          destinosSelecionados={destinosSelecionados}
-                        />}
+                        document={
+                          <MyDocument
+                            form={form}
+                            somaDiarias={somaDiarias}
+                            tipoCargo={tipoCargo}
+                            tipoViagem={tipoViagem}
+                            municipioSelecionado={municipioSelecionado}
+                            numeroDiarias={numeroDiarias}
+                            destinosSelecionados={destinosSelecionados}
+                          />
+                        }
                         fileName="form.pdf"
                       >
                         {({ blob, url, loading, error }) =>
