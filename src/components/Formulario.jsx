@@ -1,16 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
-
-import {
-  PDFDownloadLink,
-  Page,
-  Text,
-  View,
-  Document,
-  Image,
-  StyleSheet,
-} from "@react-pdf/renderer";
+import { PDFDownloadLink, Page, Text, View, Document, Image, StyleSheet } from "@react-pdf/renderer";
 import Diarias from "./Diarias";
 import "../App.css";
 import logo from "../../public/images/brasao-para.png";
@@ -27,18 +18,19 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   section: {
-    margin: 20,
+    marginTop: 5,
+    marginLeft: 20,
+    marginRight: 20,
     padding: 20,
     flexGrow: 1,
   },
   title: {
     fontSize: 10,
-    textAlign: "center",
-    marginTop: 16,
-    fontWeight: "bold",
+    textAlign: 'center',
+    marginBottom: 5,
   },
   subtitle: {
-    fontSize: 10,
+    fontSize: 12,
     textTransform: "uppercase",
     textAlign: "center",
     border: 1,
@@ -47,12 +39,11 @@ const styles = StyleSheet.create({
     borderColor: "black",
     borderStyle: "solid",
     backgroundColor: "#e2dede",
-    border: "none",
     gap: 8,
   },
   date: {
     textAlign: "right",
-    fontSize: 12,
+    fontSize: 10,
     marginBottom: 8,
   },
   text: {
@@ -66,17 +57,16 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   imageContainer: {
-    width: 70,
-    height: 70,
+    width: 40,
+    height: 50,
     alignSelf: "center",
     marginTop: 16,
-    marginBottom: "auto",
+    marginBottom: 10,
   },
   container: {
     borderStyle: "solid",
     borderWidth: 1,
     borderColor: "#bfbfbf",
-
     marginLeft: 14,
     padding: 10,
   },
@@ -94,7 +84,6 @@ const styles = StyleSheet.create({
   },
   tableHeader: {
     fontWeight: 'bold',
-    
   },
   tableColumn: {
     flexDirection: "column",
@@ -107,6 +96,7 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 1,
     marginBottom: 10,
+
   },
   tableRow: {
     flexDirection: "column",
@@ -115,10 +105,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     marginBottom: 10,
+
   },
+  total: {
+    flexDirection: 'row',
+    marginLeft: 240,
+    gap: 120
+  }
 });
 
-const MyDocument = ({ form, destinosSelecionados, somaDiarias }) => (
+const MyDocument = ({ form, destinosSelecionados, somaDiarias, somaQntDeDiarias, periodoInicio, periodoFinal }) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <Image src={logo} style={styles.imageContainer} />
@@ -133,99 +129,149 @@ const MyDocument = ({ form, destinosSelecionados, somaDiarias }) => (
           para realização de despesas, conforme discriminação abaixo
         </Text>
         <View style={styles.container}>
-          <Text style={[styles.text,]}>
-            Setor: {form.setor}
-          </Text>
-          <Text style={[styles.text,]}>
-            Beneficiário: {form.beneficiario}
-          </Text>
-          <Text style={[styles.text,]}>
-            Cargo/Função: {form.cargo_funcao}
-          </Text>
-          <Text style={[styles.text, ]}>
-            Matrícula: {form.matricula}
-          </Text>
-          <Text style={[styles.text, ]}>
-            Banco: {form.banco}
-          </Text>
-          <Text style={[styles.text, ]}>
-            Agência: {form.agencia}
-          </Text>
-          <Text style={[styles.text,]}>
-            Conta corrente: {form.conta_corrente}
-          </Text>
-          <Text style={[styles.text, ]}>
-            Lotação: {form.lotacao}
-          </Text>
-          <Text style={[styles.text, ]}>
-            Período: Início: {form.periodo_inicio} Término: {form.periodo_final}
-          </Text>
-          <Text style={[styles.text, ]}>
-            Motivação: {form.motivacao}
-          </Text>
-          <Text style={[styles.text,]}>
-            Observação: {form.observacao}
-          </Text>
-          <Text style={[styles.text,]}>
-            Objetivo: {form.objetivo}
-          </Text>
+          {form && (
+            <>
+              <Text style={[styles.text,]}>
+                Setor: {form.setor}
+              </Text>
+              <Text style={[styles.text,]}>
+                Beneficiário: {form.beneficiario}
+              </Text>
+              <Text style={[styles.text,]}>
+                Cargo/Função: {form.cargo_funcao}
+              </Text>
+              <Text style={[styles.text,]}>
+                Matrícula: {form.matricula}
+              </Text>
+              <Text style={[styles.text,]}>
+                Banco: {form.banco}
+              </Text>
+              <Text style={[styles.text,]}>
+                Agência: {form.agencia}
+              </Text>
+              <Text style={[styles.text,]}>
+                Conta corrente: {form.conta_corrente}
+              </Text>
+              <Text style={[styles.text,]}>
+                Lotação: {form.lotacao}
+              </Text>
+              <Text style={[styles.text]}>
+                Período: Início: {periodoInicio ? format(periodoInicio, 'dd/MM/yyyy') : 'N/A'} Término: {periodoFinal ? format(periodoFinal, 'dd/MM/yyyy') : 'N/A'}
+              </Text>
+              <Text style={[styles.text,]}>
+                Motivação: {form.motivacao}
+              </Text>
+              <Text style={[styles.text,]}>
+                Observação: {form.observacao}
+              </Text>
+              <Text style={[styles.text,]}>
+                Objetivo: {form.objetivo}
+              </Text>
+            </>
+          )}
+
         </View>
-        <Text
-            style={[styles.text, { textAlign: 'center' }, { paddingTop: 20 }]}
-          >
-            Destinos Selecionados:
-          </Text>
-        <View style={[styles.table, ] }>
-  <View style={[styles.tableColumn,] }>
-    <Text style={[styles.text, ]}>Município</Text>
-    {destinosSelecionados.map((destino, index) => (
-      <View key={index} style={[styles.tableRow,]}>
-        <Text style={styles.text}>{destino.municipio}</Text>
-      </View>
-    ))}
-  </View>
 
-  <View style={styles.tableColumn}>
-    <Text style={[styles.text,]}>Número de Diárias</Text>
-    {destinosSelecionados.map((destino, index) => (
-      <View key={index} style={[styles.tableRow,]}>
-        <Text style={styles.text}>{destino.numeroDiarias}</Text>
-      </View>
-    ))}
-  </View>
+        <Text style={[styles.text, { textAlign: 'center' }, { paddingTop: 20 }, {fontWeight: 'bold'}]}> Destinos Selecionados: </Text>
 
-  <View style={[styles.tableColumn, { borderRightColor: 'white' }]}>
-    <Text style={[styles.text, ]}>Valor Total</Text>
-    {destinosSelecionados.map((destino, index) => (
-      <View key={index} style={[styles.tableRow,]}>
-        <Text style={styles.text}>{destino.totalDiarias}</Text>
-      </View>
-    ))}
-  </View>
-</View>
-        <Text style={[styles.text, { fontWeight: "bold" }]}>
-          Total: {somaDiarias}
-        </Text>
+        <View style={[styles.table]}>
+
+          <View style={[styles.tableColumn,]}>
+            <Text style={[styles.text,]}>Destino</Text>
+            {destinosSelecionados.map((destino, index) => (
+              <View key={index} style={[styles.tableRow,]}>
+                <Text style={styles.text}>{destino.municipio}</Text>
+              </View>
+            ))}
+            <Text style={[styles.text, { fontWeight: "bold" }]}> </Text>
+          </View>
+
+          <View style={styles.tableColumn}>
+            <Text style={[styles.text,]}>Número de Diárias</Text>
+            {destinosSelecionados.map((destino, index) => (
+              <View key={index} style={[styles.tableRow,]}>
+                <Text style={styles.text}>{destino.numeroDiarias}</Text>
+              </View>
+            ))}
+         
+          </View>
+          <View style={[styles.tableColumn, { borderRightColor: 'white' }]}>
+            <Text style={[styles.text,]}>Valor Total</Text>
+            {destinosSelecionados.map((destino, index) => (
+              <View key={index} style={[styles.tableRow,]}>
+                <Text style={styles.text}>{destino.totalDiarias.toFixed(2)}</Text>
+              </View>
+            ))}
+            
+          </View>
+          
+        </View>
+        <View style={styles.total}>
+          
+          <Text style={[styles.text, { fontWeight: "bold" }]}> Total: {somaQntDeDiarias} </Text>
+          <Text style={[styles.text, { fontWeight: "bold" }]}> Total: {somaDiarias.toFixed(2)} </Text>
+          </View>
       </View>
     </Page>
   </Document>
 );
 
+
 export const Formulario = () => {
   const { register, handleSubmit } = useForm();
   const [form, setForm] = React.useState(null);
 
+
   // Componentes Diarias.jsx
-  const [tipoCargo, setTipoCargo] = useState("1");
-  const [tipoViagem, setTipoViagem] = useState("1");
+  const [tipoCargo, setTipoCargo] = useState('1');
+  const [tipoViagem, setTipoViagem] = useState('1');
   const [municipioSelecionado, setMunicipioSelecionado] = useState(null);
-  const [numeroDiarias, setNumeroDiarias] = useState("");
+  const [numeroDiarias, setNumeroDiarias] = useState('');
   const [totalDiarias, setTotalDiarias] = useState(0);
   const [destinosSelecionados, setDestinosSelecionados] = useState([]);
   const [somaDiarias, setSomaDiarias] = useState(0);
-  console.log(totalDiarias);
+  const [somaQntDeDiarias, setSomaQntDeDiarias] = useState(0)
 
-  const onSubmit = (data) => setForm(data);
+  const [saldo, setSaldo] = React.useState(0);
+  const [saldoMetade, setSaldoMetade] = React.useState(0);
+  const [periodoInicio, setPeriodoInicio] = useState(null);
+  const [periodoFinal, setPeriodoFinal] = useState(null);
+
+
+  const handleDateChange = (field, event) => {
+    const value = new Date(event.target.value);
+    if (field === 'periodo_inicio') {
+      setPeriodoInicio(value);
+    } else if (field === 'periodo_final') {
+      setPeriodoFinal(value);
+    }
+  };
+
+  useEffect(() => {
+    if (periodoInicio && periodoFinal) {
+      if (periodoFinal.getTime() < periodoInicio.getTime()) {
+        alert("A data de término não pode ser anterior à data de início.");
+        return;
+      }
+
+      const diferencaTempo = Math.abs(periodoFinal - periodoInicio);
+      const quantidadeDias = Math.ceil(diferencaTempo / (1000 * 60 * 60 * 24));
+
+      const calcPeriodo = quantidadeDias + 1;
+      const calcMetade = calcPeriodo / 2;
+
+      setSaldo(calcPeriodo);
+      setSaldoMetade(calcMetade);
+    }
+  }, [periodoInicio, periodoFinal]);
+
+
+
+  const onSubmit = (data) => {
+    setForm(data);
+
+  };
+
 
   return (
     <div>
@@ -238,7 +284,7 @@ export const Formulario = () => {
       </div>
       <div className="main-container">
         <div className="title">
-          <h1>ASSUNTO: SOLICITAÇÃO DE DIÁRIA</h1>
+          <h1>SOLICITAÇÃO DE DIÁRIA</h1>
         </div>
         <div className="content">
           <div className="description">
@@ -362,17 +408,16 @@ export const Formulario = () => {
                       <div>
                         <input
                           type="date"
-                          date
                           name="periodo_inicio"
                           id="periodo_inicio"
-                          {...register("periodo_inicio")}           
+                          onChange={(e) => handleDateChange('periodo_inicio', e)}
                         />
                         <div>
                           <input
                             type="date"
                             name="periodo_final"
                             id="periodo_final"
-                            {...register("periodo_final")}
+                            onChange={(e) => handleDateChange('periodo_final', e)}
                           />
                         </div>
                       </div>
@@ -421,6 +466,7 @@ export const Formulario = () => {
                 </div>
                 <div className="second_section">
                   <Diarias
+                    setSomaQntDeDiarias={setSomaQntDeDiarias}
                     setSomaDiarias={setSomaDiarias}
                     tipoCargo={tipoCargo}
                     setTipoCargo={setTipoCargo}
@@ -436,23 +482,35 @@ export const Formulario = () => {
                     setDestinosSelecionados={setDestinosSelecionados}
                   />
                   <div className="generatePDF">
-                    {form && (
+                    {!(periodoInicio && periodoFinal) ? (
+                      <div className='errorMessage'>
+                        <p>Selecione o período.</p>
+                      </div>
+                    ) : !(destinosSelecionados.length > 0) ? (
+                      <p>Selecione algum destino.</p>
+                    ) : !(somaQntDeDiarias <= saldo && somaQntDeDiarias >= saldoMetade) ? (
+                      <div className='errorMessage'>
+                        <p>Erro: Verifique se a quantidade de diárias não excedeu ao período.</p>
+                      </div>
+                    ) : (
                       <PDFDownloadLink
-                        document={
-                          <MyDocument
-                            form={form}
-                            somaDiarias={somaDiarias}
-                            tipoCargo={tipoCargo}
-                            tipoViagem={tipoViagem}
-                            municipioSelecionado={municipioSelecionado}
-                            numeroDiarias={numeroDiarias}
-                            destinosSelecionados={destinosSelecionados}
-                          />
-                        }
+                        document={<MyDocument
+                          form={form}
+                          somaDiarias={somaDiarias}
+                          somaQntDeDiarias={somaQntDeDiarias}
+                          tipoCargo={tipoCargo}
+                          tipoViagem={tipoViagem}
+                          municipioSelecionado={municipioSelecionado}
+                          numeroDiarias={numeroDiarias}
+                          destinosSelecionados={destinosSelecionados}
+                          periodoInicio={periodoInicio}
+                          periodoFinal={periodoFinal}
+                        />}
                         fileName="form.pdf"
+                        className="pdfButton"
                       >
                         {({ blob, url, loading, error }) =>
-                          loading ? "Carregando documento..." : "Baixar PDF"
+                          loading ? "Carregando documento..." : "Gerar PDF"
                         }
                       </PDFDownloadLink>
                     )}

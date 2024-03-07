@@ -52,6 +52,7 @@ form {
     display: flex;
     justify-content: center;
     align-items: center;
+    text-transform: uppercase;
 }
 
 .form_table {
@@ -97,24 +98,62 @@ input {
 .select_form {
     width: 200px;
 }
+
+.btn-destino button {
+    margin: 10px;
+    cursor: pointer;
+    padding: 16px;
+    border: none;
+    background-color: #d1d0d0;
+}
+.btn-destino-hover:hover {
+    background-color: #3f3c3c;
+    color: #fff;
+}
 .result-container {
     border: 1px solid #d1d0d0;
     padding: 20px;
     line-height: 30px;
 }
-
-.btn-destino button {
-    padding: 10px;
-    margin: 10px;
+.result-container button {
+    border: none;
+    padding: 8px;
+    background: transparent;
 }
 
+
+.trashIcon {
+    border: none;
+    margin-top: 10px;
+    cursor: pointer;
+    font-size: 20px;
+}
 .error {
     color: red;
     text-align: left;
     font-size: 12px;
 }
 
-.btn-destino button{
+
+#estado {
+    width: 100px;
+}
+
+#municipios {
+    width: 180px;
+}
+.generatePDF {
+    padding-top: 20px;
+}
+.pdfButton {
+    background-color: #d1d0d0;
+    margin: 20px;
     cursor: pointer;
     padding: 16px;
+    text-decoration: none;
+    color: black;
+}
+.pdfButton:hover {
+    background-color: #3f3c3c;
+    color: #fff;
 }
