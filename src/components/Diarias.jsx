@@ -172,7 +172,7 @@ const Diarias = ({
           </div>
         </div>
 
-        <div>
+        <div className='destinoDiv'>
           <label htmlFor="estado">Estado:</label>
           <Select
             id="estado"
@@ -183,10 +183,10 @@ const Diarias = ({
         </div>
 
         {showMunicipiosSelect && (
-          <div>
+          <div className='destinoDiv'>
             <label htmlFor="municipios">Municípios:</label>
             <Select
-            className='selectMunicipios'
+            
               id="municipios"
               value={municipioSelecionado}
               onChange={handleMunicipioChange}
@@ -196,7 +196,7 @@ const Diarias = ({
           </div>
         )}
 
-        <div>
+        <div className='numerodiarias'>
           <label htmlFor="numeroDiarias">Número de Diárias:</label>
           <div>
             <input
@@ -204,7 +204,7 @@ const Diarias = ({
               id="numeroDiarias"
               value={numeroDiarias}
               onChange={handleNumeroDiariasChange}
-              style={{ width: '100px' }}
+              
             />
           </div>
         </div>
@@ -217,7 +217,7 @@ const Diarias = ({
       <div className='result-container'>
   <h4>Resultado:</h4>
   {destinosSelecionados.map((destino, index) => (
-    <div key={index} style={{ backgroundColor: index % 2 === 0 ? '#f0f0f0' : '#ffffff', padding: '12px' }}>
+    <div className='result-box' key={index} style={{ backgroundColor: index % 2 === 0 ? '#f0f0f0' : '#ffffff', padding: '12px' }}>
       <p>Município: {destino.municipio}</p>
       <p>Número de Diárias: {destino.numeroDiarias}</p>
       <p>Total Diárias: R${destino.totalDiarias.toFixed(2)}</p>

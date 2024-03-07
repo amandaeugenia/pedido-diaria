@@ -284,7 +284,7 @@ export const Formulario = () => {
       </div>
       <div className="main-container">
         <div className="title">
-          <h1>SOLICITAÇÃO DE DIÁRIA</h1>
+          <h2>SOLICITAÇÃO DE DIÁRIA</h2>
         </div>
         <div className="content">
           <div className="description">
@@ -448,9 +448,9 @@ export const Formulario = () => {
                           rows="10"
                         />
                       </div>
-                    </div>
+                    </div>                     
                   </div>
-                  <div>
+                  <div className="">
                     <label htmlFor="">Objetivo:</label>
                     <div>
                       <textarea
@@ -460,9 +460,10 @@ export const Formulario = () => {
                         {...register("objetivo")}
                         cols="90"
                         rows="10"
+                        padding="10"
                       />
                     </div>
-                  </div>
+                  </div> 
                 </div>
                 <div className="second_section">
                   <Diarias
@@ -484,13 +485,13 @@ export const Formulario = () => {
                   <div className="generatePDF">
                     {!(periodoInicio && periodoFinal) ? (
                       <div className='errorMessage'>
-                        <p>Selecione o período.</p>
+                        <small>Selecione o período.</small>
                       </div>
                     ) : !(destinosSelecionados.length > 0) ? (
-                      <p>Selecione algum destino.</p>
+                      <small>Selecione algum destino.</small>
                     ) : !(somaQntDeDiarias <= saldo && somaQntDeDiarias >= saldoMetade) ? (
                       <div className='errorMessage'>
-                        <p>Erro: Verifique se a quantidade de diárias não excedeu ao período.</p>
+                        <small>Erro: Verifique se a quantidade de diárias não excedeu ao período.</small>
                       </div>
                     ) : (
                       <PDFDownloadLink
@@ -506,7 +507,7 @@ export const Formulario = () => {
                           periodoInicio={periodoInicio}
                           periodoFinal={periodoFinal}
                         />}
-                        fileName="form.pdf"
+                        fileName="Diária.pdf"
                         className="pdfButton"
                       >
                         {({ blob, url, loading, error }) =>
