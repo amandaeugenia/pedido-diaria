@@ -6,16 +6,13 @@ import Diarias from "./Diarias";
 import "../App.css";
 import logo from "../../public/images/brasao-para.png";
 
-const getFormattedDate = () => {
-  const currentDate = new Date();
-  return format(currentDate, "dd/MM/yyyy HH:mm:ss");
-};
 
 const styles = StyleSheet.create({
   page: {
     flexDirection: "column",
     backgroundColor: "#FFFF",
     paddingRight: 20,
+    fontSize: 10
   },
   section: {
     marginTop: 5,
@@ -69,6 +66,7 @@ const styles = StyleSheet.create({
     borderColor: "#bfbfbf",
     marginLeft: 14,
     padding: 10,
+    textTransform: 'uppercase'
   },
   table: {
     display: "table",
@@ -96,22 +94,36 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 1,
     marginBottom: 10,
-
   },
   tableRow: {
-    flexDirection: "column",
-    justifyContent: "center",
-    alignContent: "center",
-    alignItems: "center",
-    flex: 1,
-    marginBottom: 10,
-
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: "black",
+    paddingVertical: 8,
+    justifyContent: 'space-around'
+  },
+  content: {
+    flex: 7,
+    fontSize: 10,
+    paddingLeft: 8,
+    marginLeft: 2,
+    textTransform: 'uppercase',
+  },
+  leftLabel: {
+    flex: 2,
+    fontSize: 10,
+    fontWeight: 'bold',
+    textAlign: 'left', 
+    borderRightWidth: 1,
+    borderRightColor: "#000",
+    marginRight: 20
   },
   total: {
     flexDirection: 'row',
     marginLeft: 240,
     gap: 120
-  }
+  },
+
 });
 
 const MyDocument = ({ form, destinosSelecionados, somaDiarias, somaQntDeDiarias, periodoInicio, periodoFinal }) => (
@@ -122,7 +134,7 @@ const MyDocument = ({ form, destinosSelecionados, somaDiarias, somaQntDeDiarias,
       <Text style={styles.title}>GOVERNO DO ESTADO DO PARÁ</Text>
       <Text style={styles.title}>AGÊNCIA DE DEFESA AGROPECUÁRIA DO PARÁ</Text>
       <View style={styles.section}>
-        <Text style={styles.date}>{getFormattedDate()}</Text>
+        <Text style={styles.date}>{format(new Date(), 'dd/MM/yyyy')}</Text>
         <Text style={styles.subtitle}>Papeleta de despesa</Text>
         <Text style={styles.subtext}>
           Senhor Diretor, solicitamos as necessárias providências de V. Sa.,
@@ -131,86 +143,88 @@ const MyDocument = ({ form, destinosSelecionados, somaDiarias, somaQntDeDiarias,
         <View style={styles.container}>
           {form && (
             <>
-              <Text style={[styles.text,]}>
-                Setor: {form.setor}
-              </Text>
-              <Text style={[styles.text,]}>
-                Beneficiário: {form.beneficiario}
-              </Text>
-              <Text style={[styles.text,]}>
-                Cargo/Função: {form.cargo_funcao}
-              </Text>
-              <Text style={[styles.text,]}>
-                Matrícula: {form.matricula}
-              </Text>
-              <Text style={[styles.text,]}>
-                Banco: {form.banco}
-              </Text>
-              <Text style={[styles.text,]}>
-                Agência: {form.agencia}
-              </Text>
-              <Text style={[styles.text,]}>
-                Conta corrente: {form.conta_corrente}
-              </Text>
-              <Text style={[styles.text,]}>
-                Lotação: {form.lotacao}
-              </Text>
-              <Text style={[styles.text]}>
-                Período: Início: {periodoInicio ? format(periodoInicio, 'dd/MM/yyyy') : 'N/A'} Término: {periodoFinal ? format(periodoFinal, 'dd/MM/yyyy') : 'N/A'}
-              </Text>
-              <Text style={[styles.text,]}>
-                Motivação: {form.motivacao}
-              </Text>
-              <Text style={[styles.text,]}>
-                Observação: {form.observacao}
-              </Text>
-              <Text style={[styles.text,]}>
-                Objetivo: {form.objetivo}
-              </Text>
+            <View style={styles.tableRow}>
+                <Text style={styles.leftLabel}>Beneficiário:</Text>
+                <Text style={styles.content}>{form.beneficiario}</Text>
+              </View>
+              <View style={styles.tableRow}>
+                <Text style={styles.leftLabel}>Setor</Text>
+                <Text style={styles.content}>{form.setor}</Text>
+              </View>
+              <View style={styles.tableRow}>
+                <Text style={styles.leftLabel}>Cargo/Função</Text>
+                <Text style={styles.content}>{form.cargo_funcao}</Text>
+              </View>
+              <View style={styles.tableRow}>
+                <Text style={styles.leftLabel}>Matrícula</Text>
+                <Text style={styles.content}>{form.matricula}</Text>
+              </View>
+              <View style={styles.tableRow}>
+                <Text style={styles.leftLabel}>Banco</Text>
+                <Text style={styles.content}>{form.banco}</Text>
+              </View>
+              <View style={styles.tableRow}>
+                <Text style={styles.leftLabel}>Agência</Text>
+                <Text style={styles.content}>{form.agencia}</Text>
+              </View>
+              <View style={styles.tableRow}>
+                <Text style={styles.leftLabel}>Conta corrente</Text>
+                <Text style={styles.content}>{form.conta_corrente}</Text>
+              </View>
+              <View style={styles.tableRow}>
+                <Text style={styles.leftLabel}>Lotação</Text>
+                <Text style={styles.content}>{form.lotacao}</Text>
+              </View>
+              <View style={styles.tableRow}>
+                <Text style={styles.leftLabel}>Período</Text>
+                <Text style={styles.content}>
+                  DE: {periodoInicio ? format(periodoInicio, 'dd/MM/yyyy') : 'N/A'} <br></br>
+                  ATÉ: {periodoFinal ? format(periodoFinal, 'dd/MM/yyyy') : 'N/A'}
+                </Text>
+              </View>
+              <View style={styles.tableRow}>
+                <Text style={styles.leftLabel}>Objetivo</Text>
+                <Text style={styles.content}>{form.objetivo}</Text>
+              </View>
+              <View style={styles.tableRow}>             
+                <Text style={styles.leftLabel}>Motivação</Text>
+                <Text style={styles.content}>{form.motivacao}</Text>
+              </View>
+              <View style={styles.tableRow}>
+                <Text style={styles.leftLabel}>Observação</Text>
+                <Text style={styles.content}>{form.observacao}</Text>
+              </View>
             </>
           )}
-
         </View>
 
         <Text style={[styles.text, { textAlign: 'center' }, { paddingTop: 20 }, {fontWeight: 'bold'}]}> Destinos Selecionados: </Text>
 
-        <View style={[styles.table]}>
-
-          <View style={[styles.tableColumn,]}>
-            <Text style={[styles.text,]}>Destino</Text>
-            {destinosSelecionados.map((destino, index) => (
-              <View key={index} style={[styles.tableRow,]}>
-                <Text style={styles.text}>{destino.municipio}</Text>
-              </View>
-            ))}
-            <Text style={[styles.text, { fontWeight: "bold" }]}> </Text>
-          </View>
-
+        <View style={styles.table}>
           <View style={styles.tableColumn}>
-            <Text style={[styles.text,]}>Número de Diárias</Text>
+            <Text style={styles.text}>Destino</Text>
             {destinosSelecionados.map((destino, index) => (
-              <View key={index} style={[styles.tableRow,]}>
-                <Text style={styles.text}>{destino.numeroDiarias}</Text>
-              </View>
+              <Text key={index} style={styles.text}>{destino.municipio}</Text>
             ))}
-         
           </View>
-          <View style={[styles.tableColumn, { borderRightColor: 'white' }]}>
-            <Text style={[styles.text,]}>Valor Total</Text>
+          <View style={styles.tableColumn}>
+            <Text style={styles.text}>Número de Diárias</Text>
             {destinosSelecionados.map((destino, index) => (
-              <View key={index} style={[styles.tableRow,]}>
-                <Text style={styles.text}>{destino.totalDiarias.toFixed(2)}</Text>
-              </View>
+              <Text key={index} style={styles.text}>{destino.numeroDiarias}</Text>
             ))}
-            
           </View>
-          
+          <View style={styles.tableColumn}>
+            <Text style={styles.text}>Valor Total</Text>
+            {destinosSelecionados.map((destino, index) => (
+              <Text key={index} style={styles.text}>{destino.totalDiarias.toFixed(2)}</Text>
+            ))}
+          </View>
         </View>
+
         <View style={styles.total}>
-          
           <Text style={[styles.text, { fontWeight: "bold" }]}> Total: {somaQntDeDiarias} </Text>
           <Text style={[styles.text, { fontWeight: "bold" }]}> Total: {somaDiarias.toFixed(2)} </Text>
-          </View>
+        </View>
       </View>
     </Page>
   </Document>
@@ -423,45 +437,48 @@ export const Formulario = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="form_table">
+                  <div>
                     <div>
-                      <label htmlFor="">Motivação:</label>
+                      <label htmlFor="">Objetivo:</label>
                       <div>
                         <textarea
                           type="text"
                           name="motivacao"
                           id="motivacao:"
+                          {...register("objetivo")}
+                          cols="90"
+                          rows="10"
+                        />
+                      </div>
+                    </div>
+                                       
+                  </div>
+                  <div className="form_table">
+                  <div>
+                      <label htmlFor="">Motivação:</label>
+                      <div>
+                        <textarea
+                          name="observacao"
+                          id="observacao"
                           {...register("motivacao")}
                           cols="40"
                           rows="10"
                         />
                       </div>
-                    </div>
+                    </div> 
                     <div>
                       <label htmlFor="">Observação:</label>
                       <div>
                         <textarea
-                          name="observacao"
-                          id="observacao"
+                          type="text"
+                          name="objetivo"
+                          id="objetivo:"
                           {...register("observacao")}
                           cols="40"
                           rows="10"
+                          padding="10"
                         />
                       </div>
-                    </div>                     
-                  </div>
-                  <div className="">
-                    <label htmlFor="">Objetivo:</label>
-                    <div>
-                      <textarea
-                        type="text"
-                        name="objetivo"
-                        id="objetivo:"
-                        {...register("objetivo")}
-                        cols="90"
-                        rows="10"
-                        padding="10"
-                      />
                     </div>
                   </div> 
                 </div>
