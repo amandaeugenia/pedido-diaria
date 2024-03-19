@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
+import Select from 'react-select';
 import { useForm } from "react-hook-form";
+import { FaTrashAlt } from 'react-icons/fa';
 import { format } from "date-fns";
 import { PDFDownloadLink, Page, Text, View, Document, Image, StyleSheet } from "@react-pdf/renderer";
-import Diarias from "./Diarias";
+//import Diarias from "./Diarias";
 import "../App.css";
 import logo from "../../public/images/brasao-para.png";
+
 
 
 const styles = StyleSheet.create({
@@ -126,7 +129,7 @@ const styles = StyleSheet.create({
 
 });
 
-const MyDocument = ({ form, destinosSelecionados, somaDiarias, somaQntDeDiarias, periodoInicio, periodoFinal }) => (
+const MyDocument = ({ form, destinosSelecionados, somaDiarias, somaQntDeDiarias, periodoInicio, periodoFinal, tipoCargo }) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <Image src={logo} style={styles.imageContainer} />
@@ -137,8 +140,11 @@ const MyDocument = ({ form, destinosSelecionados, somaDiarias, somaQntDeDiarias,
         <Text style={styles.date}>{format(new Date(), 'dd/MM/yyyy')}</Text>
         <Text style={styles.subtitle}>Papeleta de despesa</Text>
         <Text style={styles.subtext}>
-          Senhor Diretor, solicitamos as necessárias providências de V. Sa.,
-          para realização de despesas, conforme discriminação abaixo
+        Solicitamos a liberação de diária (a), conforme dados descritos abaixo, declarando que me responsabilizo 
+        administrativamente por ter conferido que o servidor designado para a ação não possui pendências de relatórios de 
+        viagem e suprimentos de fundos deste exercício junto à GECON, não se encontrando inscrito em diversos responsáveis, e 
+        que no período desta ação não estará em gozo de férias ou outro tipo de licença previsível.
+        Para tanto, segue o documento de identificação com foto e a declaração de diária em anexo
         </Text>
         <View style={styles.container}>
           {form && (
@@ -153,7 +159,7 @@ const MyDocument = ({ form, destinosSelecionados, somaDiarias, somaQntDeDiarias,
               </View>
               <View style={styles.tableRow}>
                 <Text style={styles.leftLabel}>Cargo/Função</Text>
-                <Text style={styles.content}>{form.cargo_funcao}</Text>
+                <Text style={styles.content}>{tipoCargo}</Text>
               </View>
               <View style={styles.tableRow}>
                 <Text style={styles.leftLabel}>Matrícula</Text>
@@ -185,10 +191,6 @@ const MyDocument = ({ form, destinosSelecionados, somaDiarias, somaQntDeDiarias,
               <View style={styles.tableRow}>
                 <Text style={styles.leftLabel}>Objetivo</Text>
                 <Text style={styles.content}>{form.objetivo}</Text>
-              </View>
-              <View style={styles.tableRow}>             
-                <Text style={styles.leftLabel}>Motivação</Text>
-                <Text style={styles.content}>{form.motivacao}</Text>
               </View>
               <View style={styles.tableRow}>
                 <Text style={styles.leftLabel}>Observação</Text>
@@ -233,25 +235,73 @@ const MyDocument = ({ form, destinosSelecionados, somaDiarias, somaQntDeDiarias,
 
 export const Formulario = () => {
   const { register, handleSubmit } = useForm();
-  const [form, setForm] = React.useState(null);
-
-
-  // Componentes Diarias.jsx
-  const [tipoCargo, setTipoCargo] = useState('1');
-  const [tipoViagem, setTipoViagem] = useState('1');
+  const [form, setForm] = useState(null);
+  const [tipoCargo, setTipoCargo] = useState('DIRETOR(A) GERAL');
+  console.log(tipoCargo)
+  const [municipios, setMunicipios] = useState([]);
+  const [estados, setEstados] = useState([]);
+  const [estadoSelecionado, setEstadoSelecionado] = useState(null);
   const [municipioSelecionado, setMunicipioSelecionado] = useState(null);
-  const [numeroDiarias, setNumeroDiarias] = useState('');
-  const [totalDiarias, setTotalDiarias] = useState(0);
+  const [showMunicipiosSelect, setShowMunicipiosSelect] = useState(false);
   const [destinosSelecionados, setDestinosSelecionados] = useState([]);
   const [somaDiarias, setSomaDiarias] = useState(0);
-  const [somaQntDeDiarias, setSomaQntDeDiarias] = useState(0)
-
-  const [saldo, setSaldo] = React.useState(0);
-  const [saldoMetade, setSaldoMetade] = React.useState(0);
+  const [somaQntDeDiarias, setSomaQntDeDiarias] = useState(0);
   const [periodoInicio, setPeriodoInicio] = useState(null);
   const [periodoFinal, setPeriodoFinal] = useState(null);
+  const [saldo, setSaldo] = useState(0);
+  const [saldoMetade, setSaldoMetade] = useState(0);
+  const [numeroDiarias, setNumeroDiarias] = useState('');
 
+  // Fetch data
+  useEffect(() => {
+    const getContent = async () => {
+      try {
+        const response = await fetch('http://192.168.100.54:3006/papeleta');
+        const data = await response.json();
 
+        const municipiosPA = data
+          .filter(municipio => municipio.estado === "PA")
+          .map(municipio => ({
+            value: municipio.nome,
+            label: municipio.nome,
+            servidor: parseFloat(municipio.servidor),
+            diretor: parseFloat(municipio.diretor)
+          }));
+
+        setMunicipios(municipiosPA);
+     
+
+        const uniqueEstados = data.reduce((acc, municipio) => {
+          if (!acc[municipio.estado]) {
+            acc[municipio.estado] = {
+              value: municipio.estado,
+              label: municipio.estado,
+              servidor: parseFloat(municipio.servidor),
+              diretor: parseFloat(municipio.diretor)
+            };
+          }
+          return acc;
+        }, {});
+
+        setEstados(Object.values(uniqueEstados));
+      } catch (error) {
+        console.log('Erro');
+      }
+    };
+    getContent();
+  }, []);
+
+  // Handle Estado
+  useEffect(() => {
+    if (estadoSelecionado && estadoSelecionado.value === 'PA') {
+      setShowMunicipiosSelect(true);
+    } else {
+      setShowMunicipiosSelect(false);
+      setMunicipioSelecionado(null);
+    }
+  }, [estadoSelecionado]);
+
+  // Handle Data
   const handleDateChange = (field, event) => {
     const value = new Date(event.target.value);
     if (field === 'periodo_inicio') {
@@ -261,6 +311,32 @@ export const Formulario = () => {
     }
   };
 
+  const handleTipoCargoChange = (event) => {
+    setTipoCargo(event.target.value);
+  };
+
+  const handleEstadoChange = (selectedOption) => {
+    setEstadoSelecionado(selectedOption);
+  };
+
+  const handleMunicipioChange = (selectedOption) => {
+    setMunicipioSelecionado(selectedOption);
+  };
+
+  const handleNumeroDiariasChange = (event) => {
+    setNumeroDiarias(event.target.value);
+  };
+
+
+  useEffect(() => {
+    const totalDiarias = destinosSelecionados.reduce((total, destino) => total + destino.totalDiarias, 0);
+    setSomaDiarias(totalDiarias);
+  
+    const totalQntDiarias = destinosSelecionados.reduce((total, destino) => total + parseFloat(destino.numeroDiarias), 0);
+    setSomaQntDeDiarias(totalQntDiarias);
+  }, [destinosSelecionados]);
+
+  // Calcular Saldo
   useEffect(() => {
     if (periodoInicio && periodoFinal) {
       if (periodoFinal.getTime() < periodoInicio.getTime()) {
@@ -279,11 +355,51 @@ export const Formulario = () => {
     }
   }, [periodoInicio, periodoFinal]);
 
-
-
+  // Handle Submit
   const onSubmit = (data) => {
     setForm(data);
+  };
 
+  // Calcular diárias
+  useEffect(() => {
+    const total = destinosSelecionados.reduce((total, destino) => total + destino.totalDiarias, 0);
+    setSomaDiarias(total);
+
+    const totalQnt = destinosSelecionados.reduce((total, destino) => total + parseFloat(destino.numeroDiarias), 0);
+    setSomaQntDeDiarias(totalQnt);
+  }, [destinosSelecionados]);
+
+  // Adicionar novo destino
+  const adicionarDestino = () => {
+    if (estadoSelecionado) {
+      let valorDiaria = 0;
+
+      if (municipioSelecionado) {
+        valorDiaria = tipoCargo === 'DIRETORIA GERAL' ? municipioSelecionado.diretor : municipioSelecionado.servidor;
+      } else {
+        const estado = estados.find(estado => estado.value === estadoSelecionado.value);
+        if (estado) {
+          valorDiaria = tipoCargo === 'DIRETORIA GERAL' ? estado.diretor : estado.servidor;
+        }
+      }
+
+      const totalDiarias = parseFloat(numeroDiarias) * valorDiaria;
+
+      const novoDestino = {
+        municipio: municipioSelecionado ? municipioSelecionado.value : estadoSelecionado.value,
+        numeroDiarias: numeroDiarias,
+        totalDiarias: totalDiarias,
+      };
+
+      setDestinosSelecionados([...destinosSelecionados, novoDestino]);
+    }
+  };
+
+  // Remover destino
+  const removerDestino = (index) => {
+    const novosDestinos = [...destinosSelecionados];
+    novosDestinos.splice(index, 1);
+    setDestinosSelecionados(novosDestinos);
   };
 
 
@@ -348,14 +464,43 @@ export const Formulario = () => {
                     </div>
 
                     <div>
-                      <label htmlFor="cargo-funcao">Cargo/Função</label>
+                      <label htmlFor="tipoCargo">Cargo Beneficiário:</label>
                       <div>
-                        <input
-                          type="text"
-                          name="cargo_funcao"
-                          id="cargo_funcao"
-                          {...register("cargo_funcao")}
-                        />
+                        <select id="tipoCargo" name="tipoCargo" value={tipoCargo} onChange={handleTipoCargoChange}>
+                          <option value ='DIRETORIA GERAL'>DIRETOR(A) GERAL</option>
+                          <option value ='DIRETOR(A) ADMINSTRATIVO E FINANCEIRO'>DIRETOR(A) ADMINSTRATIVO E FINANCEIRO</option>
+                          <option value ='DIRETOR(A) DE DEFESA E INSPEÇÃO ANIMAL'>DIRETOR(A) DE DEFESA E INSPEÇÃO ANIMAL</option>
+                          <option value ='DIRETOR(A) DE DEFESA E INSPEÇÃO VEGETAL'>DIRETOR(A) DE DEFESA E INSPEÇÃO VEGETAL</option>
+                          <option value ='Coordenador(a)'>Coordenador(a)</option>
+                          <option value ='Gerente'>Gerente</option>
+                          <option value ='FEA - Médico Veterinário'>FEA - Médico Veterinário</option>
+                          <option value ='FEA - Eng. Agrônomo'>FEA - Eng. Agrônomo</option>
+                          <option value ='FEA - Eng. Florestal'>FEA - Eng. Florestal</option>
+                          <option value ='AFA'>AFA</option>
+                          <option value ='ADA'>ADA</option>
+                          <option value ='A. de Campo'>A. de Campo</option>
+                          <option value ='A. de Barreira'>A. de Barreira</option>
+                          <option value ='Administrador(a)'>Administrador(a)</option>
+                          <option value ='Contador(a)'>Contador(a)</option>
+                          <option value ='Estatístico(a)'>Estatístico(a)</option>
+                          <option value ='Pedagogo(a)'>Pedagogo(a)</option>
+                          <option value ='Psicólogo(a)'> Psicólogo(a)</option>
+                          <option value ='Assistente social'>Assistente social</option>
+                          <option value ='Engenheiro(a) Químico(a)'>Engenheiro(a) Químico(a)</option>
+                          <option value ='Arquiteto(a)'>Arquiteto(a)</option>
+                          <option value ='Engenheiro(a) Civil'>Engenheiro(a) Civil</option>
+                          <option value ='Analista de sistemas'>Analista de sistemas</option>
+                          <option value ='Procurador(a)'>Procurador(a)</option>
+                          <option value ='Advogado(a)'>Advogado(a)</option>
+                          <option value ='Assistente Técnico Administrativo'>Assistente Técnico Administrativo</option>
+                          <option value ='Assistente de Informática'>Assistente de Informática</option>
+                          <option value ='Assistente Administrativo'>Assistente Administrativo</option>
+                          <option value ='Técnico de Laboratório'>Técnico de Laboratório</option>
+                          <option value ='Auxiliar Operacional'>Auxiliar Operacional</option>
+                          <option value ='Auxiliar de Laboratório'>Auxiliar de Laboratório</option>
+                          <option value ='Motorista'>Motorista</option>
+                          <option value ='Colaborador eventual'>Colaborador eventual</option>
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -437,68 +582,97 @@ export const Formulario = () => {
                       </div>
                     </div>
                   </div>
-                  <div>
-                    <div>
-                      <label htmlFor="">Objetivo:</label>
-                      <div>
-                        <textarea
-                          type="text"
-                          name="motivacao"
-                          id="motivacao:"
-                          {...register("objetivo")}
-                          cols="90"
-                          rows="10"
-                        />
-                      </div>
-                    </div>
-                                       
-                  </div>
                   <div className="form_table">
-                  <div>
-                      <label htmlFor="">Motivação:</label>
-                      <div>
-                        <textarea
-                          name="observacao"
-                          id="observacao"
-                          {...register("motivacao")}
-                          cols="40"
-                          rows="10"
-                        />
-                      </div>
-                    </div> 
+                  <div className="">
+                    <label htmlFor="">Objetivo:</label>
+                    <div>
+                      <textarea
+                        type="text"
+                        name="objetivo"
+                        id="objetivo:"
+                        {...register("objetivo")}
+                        cols="40"
+                        rows="10"
+                        padding="10"
+                      />
+                    </div>
+                  </div>
                     <div>
                       <label htmlFor="">Observação:</label>
                       <div>
                         <textarea
-                          type="text"
-                          name="objetivo"
-                          id="objetivo:"
+                          name="observacao"
+                          id="observacao"
                           {...register("observacao")}
                           cols="40"
                           rows="10"
-                          padding="10"
                         />
                       </div>
                     </div>
-                  </div> 
+                  </div>
                 </div>
                 <div className="second_section">
-                  <Diarias
-                    setSomaQntDeDiarias={setSomaQntDeDiarias}
-                    setSomaDiarias={setSomaDiarias}
-                    tipoCargo={tipoCargo}
-                    setTipoCargo={setTipoCargo}
-                    tipoViagem={tipoViagem}
-                    setTipoViagem={setTipoViagem}
-                    municipioSelecionado={municipioSelecionado}
-                    setMunicipioSelecionado={setMunicipioSelecionado}
-                    numeroDiarias={numeroDiarias}
-                    setNumeroDiarias={setNumeroDiarias}
-                    totalDiarias={totalDiarias}
-                    setTotalDiarias={setTotalDiarias}
-                    destinosSelecionados={destinosSelecionados}
-                    setDestinosSelecionados={setDestinosSelecionados}
-                  />
+                  <div className='form_table'>
+                   
+
+                    <div className='destinoDiv'>
+                      <label htmlFor="estado">Estado:</label>
+                      <Select
+                        id="estado"
+                        value={estadoSelecionado}
+                        onChange={handleEstadoChange}
+                        options={estados}
+                      />
+                    </div>
+
+                    {showMunicipiosSelect && (
+                      <div className='destinoDiv'>
+                        <label htmlFor="municipios">Municípios:</label>
+                        <Select
+
+                          id="municipios"
+                          value={municipioSelecionado}
+                          onChange={handleMunicipioChange}
+                          options={municipios}
+
+                        />
+                      </div>
+                    )}
+
+                    <div className='numerodiarias'>
+                      <label htmlFor="numeroDiarias">Número de Diárias:</label>
+                      <div>
+                        <input
+                          type="number"
+                          id="numeroDiarias"
+                          value={numeroDiarias}
+                          onChange={handleNumeroDiariasChange}
+
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="btn-destino">
+                    <button onClick={adicionarDestino} className='btn-destino-hover'> ADICIONAR DESTINO</button>
+                  </div>
+
+                  <div className='result-container'>
+                    <h4>Resultado:</h4>
+                    {destinosSelecionados.map((destino, index) => (
+                      <div className='result-box' key={index} style={{ backgroundColor: index % 2 === 0 ? '#f0f0f0' : '#ffffff', padding: '12px' }}>
+                        <p>Município: {destino.municipio}</p>
+                        <p>Número de Diárias: {destino.numeroDiarias}</p>
+                        <p>Total Diárias: R${destino.totalDiarias.toFixed(2)}</p>
+                        <button onClick={() => removerDestino(index)}>
+                          <FaTrashAlt className='trashIcon' /></button>
+                      </div>
+                    ))}
+                    <h4>Total de diárias:</h4>
+                    <p>{somaQntDeDiarias}</p>
+                    <h4>Total:</h4>
+                    <p>R${somaDiarias.toFixed(2) || 0}</p>
+                  </div>
                   <div className="generatePDF">
                     {!(periodoInicio && periodoFinal) ? (
                       <div className='errorMessage'>
@@ -517,7 +691,6 @@ export const Formulario = () => {
                           somaDiarias={somaDiarias}
                           somaQntDeDiarias={somaQntDeDiarias}
                           tipoCargo={tipoCargo}
-                          tipoViagem={tipoViagem}
                           municipioSelecionado={municipioSelecionado}
                           numeroDiarias={numeroDiarias}
                           destinosSelecionados={destinosSelecionados}
