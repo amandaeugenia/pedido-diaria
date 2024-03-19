@@ -116,6 +116,7 @@ input {
     padding: 16px;
     border: none;
     background-color: #d1d0d0;
+    font-weight: bold;
 }
 .btn-destino-hover:hover {
     background-color: #3f3c3c;
@@ -154,9 +155,11 @@ input {
     width: 180px;
 }
 .generatePDF {
-    padding-top: 20px;
+    padding: 30px 0px;
 }
 .pdfButton {
+    font-size: 14px;
+    font-weight: bold;
     background-color: #d1d0d0;
     margin: 32px 0;
     cursor: pointer;
